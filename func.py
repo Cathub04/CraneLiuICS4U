@@ -1,5 +1,4 @@
 import threading
-time = 0
 
 
 def add_zeroes(num, count):
@@ -13,7 +12,7 @@ def add_zeroes(num, count):
         return num
 
 
-def set_timer(time_status):
+def set_timer(time_status, time):
     s_timer = threading.Timer(1, set_timer)
     s_timer.start()
     if time_status is not True:

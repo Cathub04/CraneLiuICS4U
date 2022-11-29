@@ -14,10 +14,9 @@ pygame.init()
 
 screen = pygame.display.set_mode((1200, 800))
 pygame.display.set_caption("Game")
+background = pygame.image.load('background.png')
 
-screen.fill(BLACK)
-def start()
-class scene:
+screen.fill(background)
 
 while True:
     for event in pygame.event.get():
