@@ -16,6 +16,8 @@ screen = pygame.display.set_mode((1200, 800))
 pygame.display.set_caption("Game")
 
 screen.fill(BLACK)
+def start()
+class scene:
 
 while True:
     for event in pygame.event.get():
