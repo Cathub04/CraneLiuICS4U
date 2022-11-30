@@ -47,13 +47,13 @@ def run():
         return
     r_time += 1
 
-e1 = pygame.image.load('./src/purpmon.png')
-e2 = pygame.image.load('./src/pinkmon.png')
-enemy = [e1,e2]
 
 class nonplayer:
 
-    def barrier(self):
+    def __init__(self,enemy,height,speed):
+        self.enemy = enemy
+        self.speed = speed
+        self.pos = enemy.get_rect(.move.)
 
 
 
