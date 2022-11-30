@@ -51,7 +51,7 @@ def add_enemy(t):
     if e_change < -1200:
         e_change = 0
     else:
-        e_change -= 10
+        e_change -= 30
 
 
 def run():
@@ -60,6 +60,7 @@ def run():
     r_timer.start()
     screen.blit(background, [0, 0])
     screen.blit(character[r_time % 10], [500, 420])
+    add_enemy(r_time)
     if not time_status:
         r_timer.cancel()
         return
@@ -86,7 +87,5 @@ while True:
             time_status = False
             pygame.quit()
             sys.exit()
-
-    add_enemy(r_time)
     pygame.display.update()
 # END
