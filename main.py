@@ -25,7 +25,7 @@ text_start = FONT.render("Press any key to start >>>", False, WHITE, None)
 
 e1 = pygame.image.load('./src/purpmon.png')
 e2 = pygame.image.load('./src/pinkmon.png')
-enemy = [e1,e2]
+enemy = [e1, e2]
 
 
 # Timer
@@ -48,25 +48,6 @@ def run():
     r_time += 1
 
 
-class nonplayer:
-
-    def __init__(self,enemy,height,speed):
-        self.enemy = enemy
-        self.speed = speed
-        self.pos = enemy.get_rect(.move.)
-
-
-
-
-
-
-def to_quit():
-    global time_status
-    time_status = False
-    pygame.quit()
-    sys.exit()
-
-
 screen.blit(background, [0, 0])
 screen.blit(text_start, [200, 100])
 
@@ -81,21 +62,11 @@ while True:
                 run()
                 # codes
 
-            if event.key == pygame.K_ESCAPE:
-                to_quit()
-
-        if event.type == pygame.QUIT:
-            to_quit()
-        '''
-        background = [terrain1, terrain1, terrain2, terrain2, terrain2, terrain1]
-        screen = create_graphics_screen()
-        for i in range(6):
-            screen.blit(background[i], (i*10, 0))
-        playerpos = 3
-        screen.blit(playerimage, (playerpos*10, 0))
-        '''
+        key = pygame.key.get_pressed()
+        if event.type == pygame.QUIT or key[pygame.K_ESCAPE]:
+            time_status = False
+            pygame.quit()
+            sys.exit()
     pygame.display.update()
 
-class object:
-    object_surface= pygame.image.load()
 # END
