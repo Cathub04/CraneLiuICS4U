@@ -31,16 +31,6 @@ time_status = True
 
 
 # Functions
-def set_timer():
-    global time, time_status
-    s_timer = Timer(0.0165, set_timer)
-    s_timer.start()
-    if not time_status:
-        s_timer.cancel()
-        return
-    time += 1
-
-
 def run():
     global r_time
     r_timer = Timer(0.07, run)
