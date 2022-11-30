@@ -17,17 +17,18 @@ screen = pygame.display.set_mode([screen_width, screen_height])
 pygame.display.set_caption("Game")
 background = pygame.image.load('./src/background.jpeg')
 background = pygame.transform.scale(background, [screen_width, screen_height])
-FONT = pygame.font.SysFont("monospace", 100)
+FONT = pygame.font.SysFont("monospace", 50)
 character = []
-for i in range(1, 11):
-    character.append(pygame.image.load(("./src/run" + str(i) + ".png")))
-# print(character)
+for i in range(10):
+    character.append(pygame.image.load(("./src/run" + str(i + 1) + ".png")))
+text_start = FONT.render("Press any key to start >>>", False, WHITE, None)
+
 
 # Timer
 r_time = 0
 game_status = False
 time = 0
-time_status = True
+time_status = False
 
 
 # Functions
@@ -44,15 +45,18 @@ def run():
 
 
 screen.blit(background, [0, 0])
-run()
+screen.blit(text_start, [200, 100])
 
 # Main loop
 while True:
     pygame.time.Clock().tick(10)
     for event in pygame.event.get():
-        if not game_status:
-            game_status = True
-            # codes
+        if event.type == pygame.KEYDOWN:
+            if not game_status:
+                game_status = True
+                time_status = True
+                run()
+                # codes
 
         if event.type == pygame.QUIT:
             time_status = False
