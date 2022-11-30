@@ -1,5 +1,6 @@
 import pygame
 import sys
+import random
 from threading import Timer
 # import func
 
@@ -25,7 +26,8 @@ text_start = FONT.render("Press any key to start >>>", False, WHITE, None)
 
 e1 = pygame.image.load('./src/purpmon.png')
 e2 = pygame.image.load('./src/pinkmon.png')
-enemy = [e1,e2]
+enemy = [e1, e2]
+e_ran = 0
 
 
 # Timer
@@ -37,11 +39,15 @@ time_status = False
 
 # Functions
 def run():
-    global r_time
+    global r_time, e_ran
     r_timer = Timer(0.07, run)
     r_timer.start()
     screen.blit(background, [0, 0])
-    screen.blit(character[r_time % 10], [400, 400])
+    screen.blit(character[r_time % 10], [500, 400])
+    if (r_time * 100 / 7) % 3 == 0:
+        e_ran = random.randrange(2)
+    if r_time * 100 / 7 / 3 > 0:
+        screen.blit(enemy[e_ran], [500, 400])
     if not time_status:
         r_timer.cancel()
         return
