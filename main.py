@@ -53,7 +53,7 @@ screen.blit(text_start, [200, 100])
 
 # Main loop
 while True:
-    pygame.time.Clock().tick(10)
+    pygame.time.Clock().tick(30)
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if not game_status:
