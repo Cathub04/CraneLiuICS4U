@@ -21,7 +21,7 @@ FONT = pygame.font.SysFont("monospace", 100)
 character = []
 for i in range(1, 11):
     character.append(pygame.image.load(("./src/run" + str(i) + ".png")))
-print(character)
+# print(character)
 
 # Timer
 r_time = 0
@@ -43,7 +43,7 @@ def set_timer():
 
 def run():
     global r_time
-    r_timer = Timer(0.1, run)
+    r_timer = Timer(0.07, run)
     r_timer.start()
     screen.blit(background, [0, 0])
     screen.blit(character[r_time % 10], [400, 400])
