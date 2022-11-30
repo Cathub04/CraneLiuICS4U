@@ -89,4 +89,6 @@ while True:
         '''
     pygame.display.update()
 
+class object:
+    object_surface= pygame.image.load()
 # END
