@@ -51,7 +51,7 @@ def add_enemy(t):
     if e_change < -1200:
         e_change = 0
     else:
-        e_change -= 30
+        e_change -= 10
 
 
 def run():
@@ -60,9 +60,6 @@ def run():
     r_timer.start()
     screen.blit(background, [0, 0])
     screen.blit(character[r_time % 10], [500, 420])
-
-    add_enemy(r_time)
-    
     if not time_status:
         r_timer.cancel()
         return
@@ -77,16 +74,19 @@ while True:
     pygame.time.Clock().tick(30)
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
-            if not game_status:
+            if game_status:
+                continue
+            else:
                 game_status = True
                 time_status = True
                 run()
                 # codes
-
         key = pygame.key.get_pressed()
         if event.type == pygame.QUIT or key[pygame.K_ESCAPE]:
             time_status = False
             pygame.quit()
             sys.exit()
+
+    add_enemy(r_time)
     pygame.display.update()
 # END
