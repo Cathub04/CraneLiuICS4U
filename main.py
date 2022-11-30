@@ -26,10 +26,10 @@ text_start = FONT.render("Press any key to start >>>", False, WHITE, None)
 
 # Enemy
 e1 = pygame.image.load('./src/purpmon.png')
-e1 = pygame.transform.scale(e1, [100, 100])
 e2 = pygame.image.load('./src/pinkmon.png')
-e2 = pygame.transform.scale(e2, [100, 100])
 enemy = [e1, e2]
+for i in range(len(enemy)):
+    enemy[i] = pygame.transform.scale(enemy[i], [100, 100])
 e_ran = 0
 e_change = 0
 
@@ -47,8 +47,8 @@ def add_enemy(t):
     if e_change == 0:
         e_ran = random.randrange(2)
     if t * 100 / 7 / 3 > 0:
-        screen.blit(enemy[e_ran], [1100 + e_change, 530])
-    if e_change < -1100:
+        screen.blit(enemy[e_ran], [1200 + e_change, 530])
+    if e_change < -1200:
         e_change = 0
     else:
         e_change -= 30
