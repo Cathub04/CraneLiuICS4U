@@ -29,7 +29,7 @@ e1 = pygame.image.load('./src/purpmon.png')
 e2 = pygame.image.load('./src/pinkmon.png')
 enemy = [e1, e2]
 for i in range(len(enemy)):
-    enemy[i] = pygame.transform.scale(enemy[i], [100, 100])
+    enemy[i] = pygame.transform.scale(enemy[i], [150, 150])
 e_ran = 0
 e_change = 0
 
