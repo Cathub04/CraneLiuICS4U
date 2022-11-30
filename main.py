@@ -60,7 +60,9 @@ def run():
     r_timer.start()
     screen.blit(background, [0, 0])
     screen.blit(character[r_time % 10], [500, 420])
+
     add_enemy(r_time)
+    
     if not time_status:
         r_timer.cancel()
         return
