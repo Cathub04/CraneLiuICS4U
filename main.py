@@ -23,6 +23,10 @@ for i in range(10):
     character.append(pygame.image.load(("./src/run" + str(i + 1) + ".png")))
 text_start = FONT.render("Press any key to start >>>", False, WHITE, None)
 
+e1 = pygame.image.load('./src/purpmon.png')
+e2 = pygame.image.load('./src/pinkmon.png')
+enemy = [e1,e2]
+
 
 # Timer
 r_time = 0
@@ -43,10 +47,13 @@ def run():
         return
     r_time += 1
 
-enemy = pygame.image.load()
+
 class nonplayer:
 
-    def barrier(self):
+    def __init__(self,enemy,height,speed):
+        self.enemy = enemy
+        self.speed = speed
+        self.pos = enemy.get_rect(.move.)
 
 
 
