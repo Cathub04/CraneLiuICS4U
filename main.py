@@ -53,7 +53,12 @@ class nonplayer:
     def __init__(self,enemy,height,speed):
         self.enemy = enemy
         self.speed = speed
-        self.pos = enemy.get_rect(.move.)
+        self.pos = enemy.get_rect().move(0,height)
+    def move(self):
+        self.pos = self.movs.move(0,self.speed)
+        if self.pos.right > 1200:
+            self.pos.left = 0
+
 
 
 
