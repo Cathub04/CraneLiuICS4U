@@ -47,8 +47,8 @@ def add_enemy(t):
     if e_change == 0:
         e_ran = random.randrange(2)
     if t * 100 / 7 / 3 > 0:
-        screen.blit(enemy[e_ran], [1000 + e_change, 500])
-    if e_change < -1000:
+        screen.blit(enemy[e_ran], [1100 + e_change, 530])
+    if e_change < -1100:
         e_change = 0
     else:
         e_change -= 30
@@ -59,7 +59,7 @@ def run():
     r_timer = Timer(0.07, run)
     r_timer.start()
     screen.blit(background, [0, 0])
-    screen.blit(character[r_time % 10], [500, 400])
+    screen.blit(character[r_time % 10], [500, 420])
     add_enemy(r_time)
     if not time_status:
         r_timer.cancel()
