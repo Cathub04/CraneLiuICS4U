@@ -48,7 +48,7 @@ def add_enemy(t):
         e_ran = random.randrange(2)
     if t * 100 / 7 / 3 > 0:
         screen.blit(enemy[e_ran], [1200 + e_change, 530])
-    if e_change < -1200:
+    if e_change < -screen_width:
         e_change = 0
     else:
         e_change -= 30
@@ -65,6 +65,14 @@ def run():
         r_timer.cancel()
         return
     r_time += 1
+
+
+def is_coincide(p1, p2, p1cell, p2cell):
+    # a.down >= b.top or a.top <= b.down or a.left <= b.right or a.right >= left
+    if p1[0] + p1cell < p2[0] or p1[0] > p2[0] + p2cell or p1[1] > p2[1] + p2cell or p1[1] + p1cell < p2[1]:
+        return False
+    else:
+        return True
 
 
 screen.blit(background, [0, 0])
