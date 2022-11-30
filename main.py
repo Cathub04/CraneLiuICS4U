@@ -43,6 +43,15 @@ def run():
         return
     r_time += 1
 
+enemy = pygame.image.load()
+class nonplayer:
+
+    def barrier(self):
+
+
+
+
+
 
 def to_quit():
     global time_status
