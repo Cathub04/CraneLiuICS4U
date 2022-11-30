@@ -48,10 +48,13 @@ def run():
     r_timer.start()
     screen.blit(background, [0, 0])
     screen.blit(character[r_time % 10], [500, 400])
+
+
+
     if e_change == 0:
         e_ran = random.randrange(2)
     if r_time * 100 / 7 / 3 > 0:
-        screen.blit(enemy[e_ran], [1000 + e_change, 500])
+        screen.blit(enemy[e_ran], [1100 + e_change,500])
     if e_change < -1000:
         e_change = 0
     else:
@@ -82,4 +85,10 @@ while True:
             pygame.quit()
             sys.exit()
     pygame.display.update()
+
+        if event.type==pygame.KEYDOWN:
+            if event,key == pygame.K_SPACE
+                print('jump ')
+        if event.type == pygame.KEYDOWN:
+            print('key down')
 # END
