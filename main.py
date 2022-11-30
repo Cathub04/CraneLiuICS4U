@@ -9,14 +9,16 @@ GREY = pygame.Color(150, 150, 150)
 
 game_status = False
 
-
 pygame.init()
 
-screen = pygame.display.set_mode((1200, 800))
+screen_width = 1200
+screen_height = 800
+screen = pygame.display.set_mode([screen_width, screen_height])
 pygame.display.set_caption("Game")
-background = pygame.image.load('background.png')
+background = pygame.image.load('./src/background.jpeg')
+background = pygame.transform.scale(background, [screen_width, screen_height])
 
-screen.fill(background)
+screen.blit(background, [0, 0])
 
 while True:
     for event in pygame.event.get():
