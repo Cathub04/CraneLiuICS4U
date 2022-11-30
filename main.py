@@ -1,24 +1,30 @@
 import pygame
 import sys
-import threading
+import random
+# import threading
 
 BLACK = pygame.Color(0, 0, 0)
 WHITE = pygame.Color(255, 255, 255)
 RED = pygame.Color(255, 0, 0)
 GREY = pygame.Color(150, 150, 150)
-character = pygame.
+
+game_status = False
+
 
 pygame.init()
 
 screen = pygame.display.set_mode((1200, 800))
 pygame.display.set_caption("Game")
+background = pygame.image.load('background.png')
 
-screen.fill(BLACK)
-def start()
-class scene:
+screen.fill(background)
 
 while True:
     for event in pygame.event.get():
+        if not game_status:
+            game_status = True
+            # codes
+
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
