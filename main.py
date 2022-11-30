@@ -24,10 +24,14 @@ for i in range(10):
     character.append(pygame.image.load(("./src/run" + str(i + 1) + ".png")))
 text_start = FONT.render("Press any key to start >>>", False, WHITE, None)
 
+# Enemy
 e1 = pygame.image.load('./src/purpmon.png')
+e1 = pygame.transform.scale(e1, [100, 100])
 e2 = pygame.image.load('./src/pinkmon.png')
+e2 = pygame.transform.scale(e2, [100, 100])
 enemy = [e1, e2]
 e_ran = 0
+e_change = 0
 
 
 # Timer
@@ -39,15 +43,19 @@ time_status = False
 
 # Functions
 def run():
-    global r_time, e_ran
+    global r_time, e_ran, e_change
     r_timer = Timer(0.07, run)
     r_timer.start()
     screen.blit(background, [0, 0])
     screen.blit(character[r_time % 10], [500, 400])
-    if (r_time * 100 / 7) % 3 == 0:
+    if e_change == 0:
         e_ran = random.randrange(2)
     if r_time * 100 / 7 / 3 > 0:
-        screen.blit(enemy[e_ran], [500, 400])
+        screen.blit(enemy[e_ran], [1000 + e_change, 500])
+    if e_change < -1000:
+        e_change = 0
+    else:
+        e_change -= 30
     if not time_status:
         r_timer.cancel()
         return
