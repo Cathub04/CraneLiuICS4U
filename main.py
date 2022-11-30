@@ -43,6 +43,22 @@ def run():
         return
     r_time += 1
 
+enemy = pygame.image.load()
+class nonplayer:
+
+    def barrier(self):
+
+
+
+
+
+
+def to_quit():
+    global time_status
+    time_status = False
+    pygame.quit()
+    sys.exit()
+
 
 screen.blit(background, [0, 0])
 screen.blit(text_start, [200, 100])
@@ -58,10 +74,11 @@ while True:
                 run()
                 # codes
 
+            if event.key == pygame.K_ESCAPE:
+                to_quit()
+
         if event.type == pygame.QUIT:
-            time_status = False
-            pygame.quit()
-            sys.exit()
+            to_quit()
         '''
         background = [terrain1, terrain1, terrain2, terrain2, terrain2, terrain1]
         screen = create_graphics_screen()
