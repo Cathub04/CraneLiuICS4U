@@ -42,20 +42,25 @@ time_status = False
 
 
 # Functions
-def run():
-    global r_time, e_ran, e_change
-    r_timer = Timer(0.07, run)
-    r_timer.start()
-    screen.blit(background, [0, 0])
-    screen.blit(character[r_time % 10], [500, 400])
+def add_enemy(t):
+    global e_ran, e_change
     if e_change == 0:
         e_ran = random.randrange(2)
-    if r_time * 100 / 7 / 3 > 0:
+    if t * 100 / 7 / 3 > 0:
         screen.blit(enemy[e_ran], [1000 + e_change, 500])
     if e_change < -1000:
         e_change = 0
     else:
         e_change -= 30
+
+
+def run():
+    global r_time
+    r_timer = Timer(0.07, run)
+    r_timer.start()
+    screen.blit(background, [0, 0])
+    screen.blit(character[r_time % 10], [500, 400])
+    add_enemy(r_time)
     if not time_status:
         r_timer.cancel()
         return
