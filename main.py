@@ -37,31 +37,33 @@ e_change = 0
 # Timer
 r_time = 0
 game_status = False
+e_time = 0
 time = 0
 time_status = False
+run_status = False
 
 
 # Functions
-def add_enemy(t):
-    global e_ran, e_change
+def add_enemy():
+    global e_ran, e_change, e_time, r_time
+    e_timer = Timer(0.07, add_enemy)
+    e_timer.start()
     if e_change == 0:
         e_ran = random.randrange(2)
-    if t * 100 / 7 / 3 > 0:
-        screen.blit(enemy[e_ran], [1200 + e_change, 530])
     if e_change < -screen_width:
         e_change = 0
     else:
         e_change -= 30
+    if not time_status:
+        e_timer.cancel()
+        return
 
 
 def run():
     global r_time
     r_timer = Timer(0.07, run)
     r_timer.start()
-    screen.blit(background, [0, 0])
-    screen.blit(character[r_time % 10], [500, 420])
-    add_enemy(r_time)
-    if not time_status:
+    if not run_status:
         r_timer.cancel()
         return
     r_time += 1
@@ -83,17 +85,29 @@ while True:
     pygame.time.Clock().tick(30)
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
-            if game_status:
-                continue
-            else:
+            if not game_status:
                 game_status = True
                 time_status = True
+                run_status = True
                 run()
+                add_enemy()
                 # codes
+            if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
+                run_status = False
+
         key = pygame.key.get_pressed()
         if event.type == pygame.QUIT or key[pygame.K_ESCAPE]:
             time_status = False
+            run_status = False
             pygame.quit()
             sys.exit()
+
+    screen.blit(background, [0, 0])
+    if game_status:
+        screen.blit(character[r_time % 10], [500, 420])
+        screen.blit(enemy[e_ran], [1200 + e_change, 530])
+    else:
+        screen.blit(text_start, [200, 100])
+
     pygame.display.update()
 # END
