@@ -26,9 +26,10 @@ FONT = pygame.font.SysFont("monospace", 50)
 character = [[], []]
 for i in range(10):
     character[0].append(pygame.image.load(("./src/run" + str(i + 1) + ".png")))
+    character[0][i] = pygame.transform.scale_by(character[1][i], 0.45)
 for i in range(8):
     character[1].append(pygame.image.load(("./src/jump" + str(i + 1) + ".png")))
-    character[1][i] = pygame.transform.scale_by(character[1][i], 0.5)
+    character[1][i] = pygame.transform.scale_by(character[1][i], 0.3)
 text_start = FONT.render("Press any key to start >>>", False, WHITE, None)
 
 # Music
