@@ -71,7 +71,7 @@ def add_enemy():
         v_change += 15
     elif looph >= 530:
         v_change -= 15
-    looph += v_change
+    # looph += v_change
     if not time_status:
         e_timer.cancel()
         return
@@ -111,6 +111,7 @@ def is_coincide(p1, p2, p1cell, p2cell):
     else:
         return True
 
+
 def backgroundwin():
     screen.blit(background, (background2, 0))
     screen.blit(background, (background3, 0))
@@ -121,18 +122,17 @@ screen.blit(background, [0, 0])
 screen.blit(text_start, [200, 100])
 
 # Main loop
-speed= 10
+speed = 10
 back = True
 while True:
     backgroundwin()
     clock.tick(speed)
-    background2 -=1.4
-    background3 -=1.4
+    background2 -= 1.4
+    background3 -= 1.4
     if background2 < background.get_width()*-1:
         background2 = background.get_width()
     if background3 < background.get_width()*-1:
         background3 = background.get_width()
-
 
     pygame.time.Clock().tick(30)
     for event in pygame.event.get():
@@ -143,7 +143,6 @@ while True:
                 run_status = True
                 run()
                 add_enemy()
-
 
             if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
                 if run_status:
@@ -168,7 +167,4 @@ while True:
         screen.blit(text_start, [200, 100])
 
     pygame.display.update()
-
-
-
 # END
