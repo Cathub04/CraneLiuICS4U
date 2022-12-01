@@ -45,8 +45,8 @@ jumpsound.set_volume(1.5)
 
 
 # Enemy
-e1 = pygame.image.load('./src/purpmon.png')
-e2 = pygame.image.load('./src/pinkmon.png')
+e1 = pygame.image.load('./src/smlie.png')
+e2 = pygame.image.load('./src/pink.png')
 enemy = [e1, e2]
 for i in range(len(enemy)):
     enemy[i] = pygame.transform.scale(enemy[i], [100, 100])
