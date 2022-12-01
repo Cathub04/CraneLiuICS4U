@@ -51,17 +51,22 @@ e_time = 0
 
 # Functions
 looph = 530
-v_change= random.randint(-15,15)
+v_change= 0
 def add_enemy():
-    global e_ran, e_change, e_time, r_time
-    e_timer = Timer(0.07, add_enemy)
+    global e_ran, e_change, e_time, r_time, looph,v_change
+    e_timer = Timer(0.025, add_enemy)
     e_timer.start()
     if e_change == 0:
         e_ran = random.randrange(2)
     if e_change < -screen_width:
         e_change = 0
     else:
-        e_change -= 30
+        e_change -= 15
+    if looph < 200:
+        v_change += 15
+    elif looph >= 530:
+        v_change -= 15
+    looph += v_change
     if not time_status:
         e_timer.cancel()
         return
@@ -135,7 +140,10 @@ while True:
             screen.blit(character[1][j_time % 8], [500, 420 + j_change])
         else:
             screen.blit(character[0][r_time % 10], [500, 420])
-        screen.blit(enemy[e_ran], [1200 + e_change, 530])
+        screen.blit(enemy[e_ran], [1200 + e_change, looph+v_change])
+
+
+
     else:
         screen.blit(text_start, [200, 100])
 
