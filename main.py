@@ -30,7 +30,7 @@ for i in range(10):
 for i in range(8):
     character[1].append(pygame.image.load(("./src/jump" + str(i + 1) + ".png")))
     character[1][i] = pygame.transform.scale_by(character[1][i], 0.38)
-text_start = FONT.render("Press any key to start >>>", False, WHITE, None)
+text_start = FONT.render("Press Space to start >>>", False, WHITE, None)
 
 # Music
 mixer.init()
