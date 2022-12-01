@@ -45,8 +45,8 @@ jumpsound.set_volume(1.5)
 
 
 # Enemy
-e1 = pygame.image.load('./src/smlie.png')
-e2 = pygame.image.load('./src/pink.png')
+e1 = pygame.image.load('./src/slime1.png')
+e2 = pygame.image.load('./src/slime2.png')
 enemy = [e1, e2]
 for i in range(len(enemy)):
     enemy[i] = pygame.transform.scale(enemy[i], [100, 100])
@@ -81,9 +81,9 @@ def add_enemy():
     else:
         e_change -= 20
     if looph + enemy[e_ran].get_height() < level - 150:
-        v_change += 15
+        v_change = 15
     elif looph >= level - enemy[e_ran].get_height():
-        v_change -= 15
+        v_change = -15
     monstersound.play()
     looph += v_change
     if not game_status:
@@ -192,7 +192,7 @@ while True:
             screen.blit(character[1][j_time % 8], [500, level - character[1][j_time % 8].get_height() + j_change])
         else:
             screen.blit(character[0][r_time % 10], [500, level - character[0][r_time % 10].get_height()])
-        screen.blit(enemy[e_ran], [screen_width + e_change, looph])
+        screen.blit(enemy[e_ran], [screen_width + e_change, looph + 20])
     else:
         screen.blit(text_start, [200, 100])
 
