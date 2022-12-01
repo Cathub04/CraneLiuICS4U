@@ -3,19 +3,18 @@ import sys
 import random
 from threading import Timer
 from pygame import mixer
-# import func
 
 BLACK = pygame.Color(0, 0, 0)
 WHITE = pygame.Color(255, 255, 255)
 RED = pygame.Color(255, 0, 0)
 GREY = pygame.Color(150, 150, 150)
 
-
 pygame.init()
 
 # Preparation
 screen_width = 1200
-screen_height = 800
+screen_height = 600
+level = 500
 screen = pygame.display.set_mode([screen_width, screen_height])
 pygame.display.set_caption("Game")
 background = [pygame.image.load('./src/bg.jpeg'), pygame.image.load('./src/bg.jpeg')]
@@ -32,8 +31,7 @@ for i in range(8):
     character[1][i] = pygame.transform.scale_by(character[1][i], 0.5)
 text_start = FONT.render("Press any key to start >>>", False, WHITE, None)
 
-
-#music
+# Music
 mixer.init()
 mixer.music.load('./src/music.mp3')
 mixer.music.play()
@@ -56,7 +54,7 @@ j_time = 0
 old_j_time = 0
 j_change = 0
 e_time = 0
-looph = 530
+looph = level - enemy[e_ran].get_height()
 v_change = 0
 bg_change = 0
 # time = 0
@@ -74,9 +72,9 @@ def add_enemy():
         e_change = 0
     else:
         e_change -= 15
-    if looph < 250:
+    if looph + enemy[e_ran].get_height() < level - 250:
         v_change += 15
-    elif looph >= 530:
+    elif looph >= level - enemy[e_ran].get_height():
         v_change -= 15
     looph += v_change
     if not time_status:
@@ -160,6 +158,7 @@ while True:
         if event.type == pygame.QUIT or key[pygame.K_ESCAPE]:
             time_status = False
             run_status = False
+            game_status = False
             pygame.quit()
             sys.exit()
 
@@ -167,10 +166,10 @@ while True:
     screen.blit(background[1], [screen_width + bg_change, 0])
     if game_status:
         if not run_status:
-            screen.blit(character[1][j_time % 8], [500, 420 + j_change])
+            screen.blit(character[1][j_time % 8], [500, level - character[1][j_time % 8].get_height() + j_change])
         else:
-            screen.blit(character[0][r_time % 10], [500, 420])
-        screen.blit(enemy[e_ran], [1050 + e_change, looph])
+            screen.blit(character[0][r_time % 10], [500, level - character[0][r_time % 10].get_height()])
+        screen.blit(enemy[e_ran], [screen_width + e_change, looph])
     else:
         screen.blit(text_start, [200, 100])
 
