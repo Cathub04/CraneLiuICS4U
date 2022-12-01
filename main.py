@@ -18,8 +18,7 @@ screen_height = 800
 screen = pygame.display.set_mode([screen_width, screen_height])
 pygame.display.set_caption("Game")
 background = pygame.image.load('./src/background.jpeg').convert()
-background2 = 0
-background3 = background.get_width()
+
 background = pygame.transform.scale(background, [screen_width, screen_height])
 clock = pygame.time.Clock()
 
@@ -112,29 +111,17 @@ def is_coincide(p1, p2, p1cell, p2cell):
         return True
 
 
-def backgroundwin():
-    screen.blit(background, (background2, 0))
-    screen.blit(background, (background3, 0))
-    pygame.display.update()
-
 
 screen.blit(background, [0, 0])
 screen.blit(text_start, [200, 100])
 
 # Main loop
-speed = 10
-back = True
-while True:
-    backgroundwin()
-    clock.tick(speed)
-    background2 -= 1.4
-    background3 -= 1.4
-    if background2 < background.get_width()*-1:
-        background2 = background.get_width()
-    if background3 < background.get_width()*-1:
-        background3 = background.get_width()
 
-    pygame.time.Clock().tick(30)
+while True:
+
+
+    screen.blit(background,(0,0))
+
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if not game_status:
