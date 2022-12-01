@@ -2,6 +2,7 @@ import pygame
 import sys
 import random
 from threading import Timer
+from pygame import mixer
 # import func
 
 BLACK = pygame.Color(0, 0, 0)
@@ -30,6 +31,12 @@ for i in range(8):
     character[1].append(pygame.image.load(("./src/jump" + str(i + 1) + ".png")))
     character[1][i] = pygame.transform.scale_by(character[1][i], 0.5)
 text_start = FONT.render("Press any key to start >>>", False, WHITE, None)
+
+
+#music
+mixer.init()
+mixer.music.load('./src/music.mp3')
+mixer.music.play()
 
 # Enemy
 e1 = pygame.image.load('./src/purpmon.png')
