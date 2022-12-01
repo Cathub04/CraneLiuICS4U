@@ -43,6 +43,7 @@ r_time = 0
 run_status = False
 j_time = 0
 old_j_time = 0
+j_change = 0
 e_time = 0
 # time = 0
 # time_status = False
@@ -75,15 +76,19 @@ def run():
 
 
 def jump():
-    global j_time, run_status, old_j_time
-    j_timer = Timer(0.07, jump)
+    global j_time, run_status, old_j_time, j_change
+    j_timer = Timer(0.025, jump)
     j_timer.start()
-    if j_time - old_j_time == 8:
+    if j_time - old_j_time == 32:
         run_status = True
         j_timer.cancel()
         old_j_time = j_time
         run()
         return
+    if j_time % 32 < 16:
+        j_change -= 20
+    else:
+        j_change += 20
     j_time += 1
 
 
@@ -125,7 +130,7 @@ while True:
     screen.blit(background, [0, 0])
     if game_status:
         if not run_status:
-            screen.blit(character[1][j_time % 8], [500, 420])
+            screen.blit(character[1][j_time % 8], [500, 420 + j_change])
         else:
             screen.blit(character[0][r_time % 10], [500, 420])
         screen.blit(enemy[e_ran], [1200 + e_change, 530])
