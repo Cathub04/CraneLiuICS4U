@@ -77,23 +77,28 @@ def add_enemy():
     elif looph >= level - enemy[e_ran].get_height():
         v_change -= 15
     looph += v_change
-    if not time_status:
+    if not game_status:
         e_timer.cancel()
         return
 
 
 def run():
-    global r_time
+    global r_time, screen_width, looph, game_status
     r_timer = Timer(0.07, run)
     r_timer.start()
     if not run_status:
         r_timer.cancel()
         return
     r_time += 1
+    if is_collide(character[0][r_time % 10], enemy[e_ran],
+                  [500, level - character[0][r_time % 10].get_height()], [screen_width + e_change, looph]):
+        r_timer.cancel()
+        game_status = False
+        return
 
 
 def jump():
-    global j_time, run_status, old_j_time, j_change
+    global j_time, run_status, old_j_time, j_change, game_status
     j_timer = Timer(0.025, jump)
     j_timer.start()
     if j_time - old_j_time == 32:
@@ -107,9 +112,14 @@ def jump():
     else:
         j_change += 20
     j_time += 1
+    if is_collide(character[1][j_time % 8], enemy[e_ran],
+                  [500, level - character[1][j_time % 8].get_height() + j_change],  [screen_width + e_change, looph]):
+        j_timer.cancel()
+        game_status = False
+        return
 
 
-def is_collide(p1, p2, p1pos, p2pos):
+def is_collide(p1, p2, p1pos, p2pos, space):
     # (surface1, surface2, [x, y], [x, y])
     #   p1.left  > p2.right                       p1.right < p2.left
     if (p1pos[0] > p2pos[0] + p2.get_width()) or (p1pos[0] + p1.get_width() < p2pos[0]) \
