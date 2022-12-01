@@ -70,7 +70,7 @@ def add_enemy():
         v_change += 15
     elif looph >= 530:
         v_change -= 15
-    # looph += v_change
+    looph += v_change
     if not time_status:
         e_timer.cancel()
         return
@@ -149,7 +149,7 @@ while True:
             screen.blit(character[1][j_time % 8], [500, 420 + j_change])
         else:
             screen.blit(character[0][r_time % 10], [500, 420])
-        screen.blit(enemy[e_ran], [1050 + e_change, looph+v_change])
+        screen.blit(enemy[e_ran], [1050 + e_change, looph])
     else:
         screen.blit(text_start, [200, 100])
 
