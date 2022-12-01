@@ -81,16 +81,11 @@ def add_enemy():
     else:
         e_change -= 20
     if looph + enemy[e_ran].get_height() < level - 150:
-        v_change = 15
+        v_change += 15
     elif looph >= level - enemy[e_ran].get_height():
-<<<<<<< HEAD
-        v_change = -15
-    monstersound.play()
-=======
         v_change -= 15
         monstersound.play()
 
->>>>>>> bf533e59a589b5f2c4204e53a1588c65a8293ffd
     looph += v_change
 
     if not game_status:
@@ -199,11 +194,7 @@ while True:
             screen.blit(character[1][j_time % 8], [500, level - character[1][j_time % 8].get_height() + j_change])
         else:
             screen.blit(character[0][r_time % 10], [500, level - character[0][r_time % 10].get_height()])
-<<<<<<< HEAD
-        screen.blit(enemy[e_ran], [screen_width + e_change, looph + 20])
-=======
         screen.blit(enemy[e_ran], [screen_width + e_change, looph+25])
->>>>>>> bf533e59a589b5f2c4204e53a1588c65a8293ffd
     else:
         screen.blit(text_start, [200, 100])
 
