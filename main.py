@@ -30,8 +30,8 @@ for i in range(10):
 for i in range(8):
     character[1].append(pygame.image.load(("./src/jump" + str(i + 1) + ".png")))
     character[1][i] = pygame.transform.scale_by(character[1][i], 0.30)
-text_start = FONT.render("Press Space to start >>>", False, WHITE, None)
-hearticon= pygame.image.load("./src/heart.png")
+text_start = FONT.render("Press Space to start >>>", False, BLACK, None)
+hearticon= pygame.transform.scale_by(pygame.image.load("./src/heart.png"),0.5)
 # Music
 mixer.init()
 mixer.music.load('./src/music.mp3')
