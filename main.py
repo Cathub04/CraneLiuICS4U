@@ -9,6 +9,7 @@ WHITE = pygame.Color(255, 255, 255)
 RED = pygame.Color(255, 0, 0)
 GREY = pygame.Color(150, 150, 150)
 
+
 pygame.init()
 
 # Preparation
@@ -16,8 +17,12 @@ screen_width = 1200
 screen_height = 800
 screen = pygame.display.set_mode([screen_width, screen_height])
 pygame.display.set_caption("Game")
-background = pygame.image.load('./src/background.jpeg')
+background = pygame.image.load('./src/background.jpeg').convert()
+background2 = 0
+background3 = background.get_width()
 background = pygame.transform.scale(background, [screen_width, screen_height])
+clock = pygame.time.Clock()
+
 FONT = pygame.font.SysFont("monospace", 50)
 character = [[], []]
 for i in range(10):
@@ -106,12 +111,29 @@ def is_coincide(p1, p2, p1cell, p2cell):
     else:
         return True
 
+def backgroundwin():
+    screen.blit(background, (background2, 0))
+    screen.blit(background, (background3, 0))
+    pygame.display.update()
+
 
 screen.blit(background, [0, 0])
 screen.blit(text_start, [200, 100])
 
 # Main loop
+speed= 10
+back = True
 while True:
+    backgroundwin()
+    clock.tick(speed)
+    background2 -=1.4
+    background3 -=1.4
+    if background2 < background.get_width()*-1:
+        background2 = background.get_width()
+    if background3 < background.get_width()*-1:
+        background3 = background.get_width()
+
+
     pygame.time.Clock().tick(30)
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
@@ -121,6 +143,7 @@ while True:
                 run_status = True
                 run()
                 add_enemy()
+
 
             if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
                 if run_status:
@@ -145,4 +168,7 @@ while True:
         screen.blit(text_start, [200, 100])
 
     pygame.display.update()
+
+
+
 # END
