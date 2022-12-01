@@ -35,6 +35,13 @@ text_start = FONT.render("Press any key to start >>>", False, WHITE, None)
 mixer.init()
 mixer.music.load('./src/music.mp3')
 mixer.music.play()
+mixer.music.set_volume(0.3)
+
+jumpsound=pygame.mixer.Sound('./src/jumpsound.mp3')
+monstersound=pygame.mixer.Sound('./src/monstersound.mp3')
+monstersound.set_volume((0.5))
+jumpsound.set_volume(1.5)
+
 
 # Enemy
 e1 = pygame.image.load('./src/purpmon.png')
@@ -76,6 +83,7 @@ def add_enemy():
         v_change += 15
     elif looph >= level - enemy[e_ran].get_height():
         v_change -= 15
+    monstersound.play()
     looph += v_change
     if not game_status:
         e_timer.cancel()
@@ -155,6 +163,7 @@ while True:
                 if run_status:
                     run_status = False
                     jump()
+                    jumpsound.play()
 
             if not game_status:
                 game_status = True
