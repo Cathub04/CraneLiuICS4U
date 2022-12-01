@@ -66,7 +66,7 @@ def add_enemy():
         e_change = 0
     else:
         e_change -= 15
-    if looph < 350:
+    if looph < 250:
         v_change += 15
     elif looph >= 530:
         v_change -= 15
