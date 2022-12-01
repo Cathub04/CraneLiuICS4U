@@ -44,6 +44,8 @@ run_status = False
 
 
 # Functions
+looph = 530
+v_change= random.randint(-15,15)
 def add_enemy():
     global e_ran, e_change, e_time, r_time
     e_timer = Timer(0.07, add_enemy)
