@@ -19,9 +19,11 @@ pygame.display.set_caption("Game")
 background = pygame.image.load('./src/background.jpeg')
 background = pygame.transform.scale(background, [screen_width, screen_height])
 FONT = pygame.font.SysFont("monospace", 50)
-character = []
+character = [[], []]
 for i in range(10):
-    character.append(pygame.image.load(("./src/run" + str(i + 1) + ".png")))
+    character[0].append(pygame.image.load(("./src/run" + str(i + 1) + ".png")))
+for i in range(8):
+    character[1].append(pygame.image.load(("./src/jump" + str(i + 1) + ".png")))
 text_start = FONT.render("Press any key to start >>>", False, WHITE, None)
 
 # Enemy
@@ -35,12 +37,13 @@ e_change = 0
 
 
 # Timer
-r_time = 0
 game_status = False
-e_time = 0
-time = 0
-time_status = False
+r_time = 0
 run_status = False
+j_time = 0
+e_time = 0
+# time = 0
+# time_status = False
 
 
 # Functions
@@ -69,8 +72,20 @@ def run():
     r_time += 1
 
 
+def jump():
+    global j_time, run_status
+    j_timer = Timer(0.07, jump)
+    j_timer.start()
+    if j_time == 8:
+        run_status = True
+        j_timer.cancel()
+        run()
+        return
+    j_time += 1
+
+
 def is_coincide(p1, p2, p1cell, p2cell):
-    # a.down >= b.top or a.top <= b.down or a.left <= b.right or a.right >= left
+    # a.down >= b.top and a.top <= b.down and a.left <= b.right and a.right >= left
     if p1[0] + p1cell < p2[0] or p1[0] > p2[0] + p2cell or p1[1] > p2[1] + p2cell or p1[1] + p1cell < p2[1]:
         return False
     else:
@@ -94,6 +109,7 @@ while True:
 
             if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
                 run_status = False
+                jump()
 
         key = pygame.key.get_pressed()
         if event.type == pygame.QUIT or key[pygame.K_ESCAPE]:
@@ -104,7 +120,10 @@ while True:
 
     screen.blit(background, [0, 0])
     if game_status:
-        screen.blit(character[r_time % 10], [500, 420])
+        if not run_status:
+            screen.blit(character[1][j_time % 8], [500, 420])
+        else:
+            screen.blit(character[0][r_time % 10], [500, 420])
         screen.blit(enemy[e_ran], [1200 + e_change, 530])
     else:
         screen.blit(text_start, [200, 100])
