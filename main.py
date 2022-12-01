@@ -162,11 +162,11 @@ def life():
     global heart
     if heart == 3:
         screen.blit(hearticon, [10, 10])
+        screen.blit(hearticon, [110, 10])
         screen.blit(hearticon, [210, 10])
-        screen.blit(hearticon, [410, 10])
     elif heart == 2:
         screen.blit(hearticon, [10, 10])
-        screen.blit(hearticon, [210, 10])
+        screen.blit(hearticon, [110, 10])
     elif heart == 1:
         screen.blit(hearticon, [10, 10])
 
