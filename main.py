@@ -42,14 +42,20 @@ time_status = False
 
 
 # Functions
+looph = 530
+v_change= random.randint(-15,15)
 def add_enemy(t):
-    global e_ran, e_change
+    global e_ran, e_change, looph,v_change
     if e_change == 0:
         e_ran = random.randrange(2)
     if t * 100 / 7 / 3 > 0:
-        screen.blit(enemy[e_ran], [1200 + e_change, 530])
+        screen.blit(enemy[e_ran], [1200 + e_change, looph+v_change])
     if e_change < -1200:
         e_change = 0
+    elif looph < 200 :
+        v_change = 15
+    elif looph > 450:
+        v_change = -15
     else:
         e_change -= 30
 
@@ -72,7 +78,9 @@ def run():
 screen.blit(background, [0, 0])
 screen.blit(text_start, [200, 100])
 
+
 # Main loop
+
 while True:
     pygame.time.Clock().tick(30)
     for event in pygame.event.get():
@@ -89,4 +97,5 @@ while True:
             pygame.quit()
             sys.exit()
     pygame.display.update()
+    looph += v_change
 # END
