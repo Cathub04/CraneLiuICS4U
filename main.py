@@ -91,7 +91,7 @@ while True:
                 run_status = True
                 run()
                 add_enemy()
-                # codes
+
             if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
                 run_status = False
 
