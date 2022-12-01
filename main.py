@@ -35,6 +35,12 @@ text_start = FONT.render("Press any key to start >>>", False, WHITE, None)
 mixer.init()
 mixer.music.load('./src/music.mp3')
 mixer.music.play()
+mixer.music.set_volume(0.3)
+
+jumpsound=pygame.mixer.Sound('./src/jumpsound.mp3')
+monstersound=pygame.mixer.Sound('./src/monstersound.mp3')
+monstersound.set_volume((0.5))
+jumpsound.set_volume(1.5)
 
 # Enemy
 e1 = pygame.image.load('./src/purpmon.png')
@@ -76,6 +82,7 @@ def add_enemy():
         v_change += 15
     elif looph >= level - enemy[e_ran].get_height():
         v_change -= 15
+        monstersound.play()
     looph += v_change
     if not game_status:
         e_timer.cancel()
@@ -164,6 +171,16 @@ while True:
                 add_enemy()
                 scroll_bg()
 
+<<<<<<< HEAD
+            if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
+
+                if run_status:
+                    run_status = False
+                    jump()
+                    jumpsound.play()
+
+=======
+>>>>>>> a9ee28922311187f025d2d23937c3ea8271abda3
         key = pygame.key.get_pressed()
         if event.type == pygame.QUIT or key[pygame.K_ESCAPE]:
             time_status = False
@@ -178,8 +195,14 @@ while True:
         if not run_status:
             screen.blit(character[1][j_time % 8], [500, level - character[1][j_time % 8].get_height() + j_change])
         else:
+<<<<<<< HEAD
+            screen.blit(character[0][r_time % 10], [500, 420])
+        screen.blit(enemy[e_ran], [1050 + e_change, looph])
+
+=======
             screen.blit(character[0][r_time % 10], [500, level - character[0][r_time % 10].get_height()])
         screen.blit(enemy[e_ran], [screen_width + e_change, looph])
+>>>>>>> a9ee28922311187f025d2d23937c3ea8271abda3
     else:
         screen.blit(text_start, [200, 100])
 
