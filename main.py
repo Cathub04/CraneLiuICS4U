@@ -30,7 +30,7 @@ for i in range(10):
 for i in range(8):
     character[1].append(pygame.image.load(("./src/jump" + str(i + 1) + ".png")))
     character[1][i] = pygame.transform.scale_by(character[1][i], 0.38)
-text_start = FONT.render("Press any key to start >>>", False, WHITE, None)
+text_start = FONT.render("Press Space to start >>>", False, WHITE, None)
 
 # Music
 mixer.init()
@@ -38,9 +38,9 @@ mixer.music.load('./src/music.mp3')
 mixer.music.play()
 mixer.music.set_volume(0.3)
 
-jumpsound=pygame.mixer.Sound('./src/jumpsound.mp3')
-monstersound=pygame.mixer.Sound('./src/monstersound.mp3')
-monstersound.set_volume((0.5))
+jumpsound = pygame.mixer.Sound('./src/jumpsound.mp3')
+monstersound = pygame.mixer.Sound('./src/monstersound.mp3')
+monstersound.set_volume(0.5)
 jumpsound.set_volume(1.5)
 
 
@@ -125,6 +125,9 @@ def jump():
                   [500, level - character[1][j_time % 8].get_height() + j_change],  [screen_width + e_change, looph]):
         j_timer.cancel()
         game_status = False
+        j_time = 0
+        j_change = 0
+        old_j_time = 0
         return
 
 
