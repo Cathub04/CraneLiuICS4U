@@ -42,6 +42,7 @@ game_status = False
 r_time = 0
 run_status = False
 j_time = 0
+old_j_time = 0
 e_time = 0
 # time = 0
 # time_status = False
@@ -74,12 +75,13 @@ def run():
 
 
 def jump():
-    global j_time, run_status
+    global j_time, run_status, old_j_time
     j_timer = Timer(0.07, jump)
     j_timer.start()
-    if j_time == 8:
+    if j_time - old_j_time == 8:
         run_status = True
         j_timer.cancel()
+        old_j_time = j_time
         run()
         return
     j_time += 1
@@ -109,8 +111,9 @@ while True:
                 add_enemy()
 
             if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
-                run_status = False
-                jump()
+                if run_status:
+                    run_status = False
+                    jump()
 
         key = pygame.key.get_pressed()
         if event.type == pygame.QUIT or key[pygame.K_ESCAPE]:
