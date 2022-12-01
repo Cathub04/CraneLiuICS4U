@@ -102,6 +102,7 @@ while True:
             pygame.quit()
             sys.exit()
 
+
     screen.blit(background, [0, 0])
     if game_status:
         screen.blit(character[r_time % 10], [500, 420])
