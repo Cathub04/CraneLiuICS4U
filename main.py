@@ -31,7 +31,7 @@ for i in range(8):
     character[1].append(pygame.image.load(("./src/jump" + str(i + 1) + ".png")))
     character[1][i] = pygame.transform.scale_by(character[1][i], 0.30)
 text_start = FONT.render("Press Space to start >>>", False, WHITE, None)
-
+hearticon= pygame.image.load("./src/heart.png")
 # Music
 mixer.init()
 mixer.music.load('./src/music.mp3')
@@ -158,7 +158,17 @@ def scroll_bg():
         return
 
 heart = 3
-
+def life():
+    global heart
+    if heart == 3:
+        screen.blit(hearticon, [10, 10])
+        screen.blit(hearticon, [210, 10])
+        screen.blit(hearticon, [410, 10])
+    elif heart == 2:
+        screen.blit(hearticon, [10, 10])
+        screen.blit(hearticon, [210, 10])
+    elif heart == 1:
+        screen.blit(hearticon, [10, 10])
 
 
 screen.blit(background[0], [0, 0])
@@ -203,6 +213,6 @@ while True:
         screen.blit(enemy[e_ran], [screen_width + e_change, looph+25])
     else:
         screen.blit(text_start, [200, 100])
-    screen.blit(FONT.render(str(heart), False, RED), [100, 100])
+    life()
     pygame.display.update()
 # END
