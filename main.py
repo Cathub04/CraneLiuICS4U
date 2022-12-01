@@ -80,7 +80,7 @@ def add_enemy():
         e_change = 0
     else:
         e_change -= 20
-    if looph + enemy[e_ran].get_height() < level - 150:
+    if looph + enemy[e_ran].get_height() < level - 300:
         v_change += 15
     elif looph >= level - enemy[e_ran].get_height():
         v_change -= 15
@@ -94,7 +94,7 @@ def add_enemy():
 
 
 def run():
-    global r_time, screen_width, looph, game_status
+    global r_time, screen_width, looph, game_status, heart
     r_timer = Timer(0.07, run)
     r_timer.start()
     if not run_status:
@@ -105,11 +105,12 @@ def run():
                   [500, level - character[0][r_time % 10].get_height()], [screen_width + e_change, looph]):
         r_timer.cancel()
         game_status = False
+        heart -= 1
         return
 
 
 def jump():
-    global j_time, run_status, old_j_time, j_change, game_status
+    global j_time, run_status, old_j_time, j_change, game_status,heart
     j_timer = Timer(0.025, jump)
     j_timer.start()
     if j_time - old_j_time == 32:
@@ -130,6 +131,7 @@ def jump():
         j_time = 0
         j_change = 0
         old_j_time = 0
+        heart -= 1
         return
 
 
@@ -154,6 +156,9 @@ def scroll_bg():
     if not game_status:
         s_timer.cancel()
         return
+
+heart = 3
+
 
 
 screen.blit(background[0], [0, 0])
@@ -187,6 +192,7 @@ while True:
             pygame.quit()
             sys.exit()
 
+
     screen.blit(background[0], [0 + bg_change, 0])
     screen.blit(background[1], [screen_width + bg_change, 0])
     if game_status:
@@ -197,6 +203,6 @@ while True:
         screen.blit(enemy[e_ran], [screen_width + e_change, looph+25])
     else:
         screen.blit(text_start, [200, 100])
-
+    screen.blit(FONT.render(str(heart), False, RED), [100, 100])
     pygame.display.update()
 # END
