@@ -45,15 +45,15 @@ j_time = 0
 old_j_time = 0
 j_change = 0
 e_time = 0
+looph = 530
+v_change = 0
 # time = 0
 # time_status = False
 
 
 # Functions
-looph = 530
-v_change= 0
 def add_enemy():
-    global e_ran, e_change, e_time, r_time, looph,v_change
+    global e_ran, e_change, e_time, r_time, looph, v_change
     e_timer = Timer(0.025, add_enemy)
     e_timer.start()
     if e_change == 0:
@@ -141,9 +141,6 @@ while True:
         else:
             screen.blit(character[0][r_time % 10], [500, 420])
         screen.blit(enemy[e_ran], [1200 + e_change, looph+v_change])
-
-
-
     else:
         screen.blit(text_start, [200, 100])
 
