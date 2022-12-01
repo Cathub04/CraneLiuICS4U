@@ -14,13 +14,14 @@ pygame.init()
 
 # Preparation
 screen_width = 1200
-screen_height = 800
+screen_height = 500
+level = 300
 screen = pygame.display.set_mode([screen_width, screen_height])
 pygame.display.set_caption("Game")
-background = pygame.image.load('./src/background.jpeg').convert()
-
-background = pygame.transform.scale(background, [screen_width, screen_height])
-clock = pygame.time.Clock()
+# background = [pygame.image.load('./src/background.jpeg'), pygame.image.load('./src/background.jpeg')]
+background = [pygame.image.load('./src/bg.jpeg'), pygame.image.load('./src/bg.jpeg')]
+for i in range(len(background)):
+    background[i] = pygame.transform.scale(background[i], [screen_width, screen_height])
 
 FONT = pygame.font.SysFont("monospace", 50)
 character = [[], []]
@@ -51,6 +52,7 @@ j_change = 0
 e_time = 0
 looph = 530
 v_change = 0
+bg_change = 0
 # time = 0
 # time_status = False
 
@@ -66,7 +68,7 @@ def add_enemy():
         e_change = 0
     else:
         e_change -= 15
-    if looph < 250:
+    if looph < 350:
         v_change += 15
     elif looph >= 530:
         v_change -= 15
@@ -77,25 +79,34 @@ def add_enemy():
 
 
 def run():
-    global r_time
+    global r_time, game_status
     r_timer = Timer(0.07, run)
     r_timer.start()
     if not run_status:
         r_timer.cancel()
         return
+    # if is_collide(character[0][r_time % 10], enemy[e_ran], [500, 420], [1050 + e_change, looph]):
+    #     r_timer.cancel()
+    #     game_status = False
+    #     return
     r_time += 1
 
 
 def jump():
-    global j_time, run_status, old_j_time, j_change
+    global j_time, run_status, old_j_time, j_change, game_status
     j_timer = Timer(0.025, jump)
     j_timer.start()
-    if j_time - old_j_time == 32:
+    if j_time - old_j_time == 32 \
+            or is_collide(character[1][j_time % 8], enemy[e_ran], [500, 420 + j_change], [1050 + e_change, looph]):
         run_status = True
         j_timer.cancel()
         old_j_time = j_time
         run()
         return
+    # if is_collide(character[0][r_time % 10], enemy[e_ran], [500, 420], [1050 + e_change, looph]):
+    #     j_timer.cancel()
+    #     game_status = False
+    #     return
     if j_time % 32 < 16:
         j_change -= 20
     else:
@@ -103,25 +114,39 @@ def jump():
     j_time += 1
 
 
-def is_coincide(p1, p2, p1cell, p2cell):
-    # a.down >= b.top and a.top <= b.down and a.left <= b.right and a.right >= left
-    if p1[0] + p1cell < p2[0] or p1[0] > p2[0] + p2cell or p1[1] > p2[1] + p2cell or p1[1] + p1cell < p2[1]:
+def is_collide(p1, p2, p1pos, p2pos):
+    # (surface1, surface2, [x, y], [x, y])
+    #   p1.left  > p2.right                       p1.right < p2.left
+    if (p1pos[0] > p2pos[0] + p2.get_width()) or (p1pos[0] + p1.get_width() < p2pos[0]) \
+            or (p1pos[1] + p1.get_height() < p2pos[1]) or (p1pos[1] > p2pos[1] + p2.get_height()):
+        #       p1.down < p2.top                           p1.top > p2.down
         return False
     else:
         return True
 
 
+def scroll_bg():
+    global bg_change
+    s_timer = Timer(0.01, scroll_bg)
+    s_timer.start()
+    bg_change -= 3
+    if bg_change == -screen_width:
+        bg_change = 0
+    if not game_status:
+        s_timer.cancel()
+        return
 
-screen.blit(background, [0, 0])
+
+screen.blit(background[0], [0, 0])
 screen.blit(text_start, [200, 100])
 
 # Main loop
-
+speed = 10
+back = True
 while True:
+    clock.tick(speed)
 
-
-    screen.blit(background,(0,0))
-
+    pygame.time.Clock().tick(45)
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if not game_status:
@@ -130,6 +155,7 @@ while True:
                 run_status = True
                 run()
                 add_enemy()
+                scroll_bg()
 
             if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
                 if run_status:
@@ -140,18 +166,19 @@ while True:
         if event.type == pygame.QUIT or key[pygame.K_ESCAPE]:
             time_status = False
             run_status = False
+            game_status = False
             pygame.quit()
             sys.exit()
 
-    screen.blit(background, [0, 0])
+    screen.blit(background[0], [0 + bg_change, 0])
+    screen.blit(background[1], [screen_width + bg_change, 0])
     if game_status:
         if not run_status:
-            screen.blit(character[1][j_time % 8], [500, 420 + j_change])
+            screen.blit(character[1][j_time % 8], [500, level + j_change])
         else:
-            screen.blit(character[0][r_time % 10], [500, 420])
+            screen.blit(character[0][r_time % 10], [500, level])
         screen.blit(enemy[e_ran], [1050 + e_change, looph])
     else:
         screen.blit(text_start, [200, 100])
-
     pygame.display.update()
 # END

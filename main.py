@@ -17,9 +17,9 @@ screen_width = 1200
 screen_height = 800
 screen = pygame.display.set_mode([screen_width, screen_height])
 pygame.display.set_caption("Game")
-background = pygame.image.load('./src/background.jpeg').convert()
-
-background = pygame.transform.scale(background, [screen_width, screen_height])
+background = [pygame.image.load('./src/bg.jpeg'), pygame.image.load('./src/bg.jpeg')]
+for i in range(len(background)):
+    background[i] = pygame.transform.scale(background[i], [screen_width, screen_height])
 clock = pygame.time.Clock()
 
 FONT = pygame.font.SysFont("monospace", 50)
@@ -51,6 +51,7 @@ j_change = 0
 e_time = 0
 looph = 530
 v_change = 0
+bg_change = 0
 # time = 0
 # time_status = False
 
@@ -103,25 +104,36 @@ def jump():
     j_time += 1
 
 
-def is_coincide(p1, p2, p1cell, p2cell):
-    # a.down >= b.top and a.top <= b.down and a.left <= b.right and a.right >= left
-    if p1[0] + p1cell < p2[0] or p1[0] > p2[0] + p2cell or p1[1] > p2[1] + p2cell or p1[1] + p1cell < p2[1]:
+def is_collide(p1, p2, p1pos, p2pos):
+    # (surface1, surface2, [x, y], [x, y])
+    #   p1.left  > p2.right                       p1.right < p2.left
+    if (p1pos[0] > p2pos[0] + p2.get_width()) or (p1pos[0] + p1.get_width() < p2pos[0]) \
+            or (p1pos[1] + p1.get_height() < p2pos[1]) or (p1pos[1] > p2pos[1] + p2.get_height()):
+        #       p1.down < p2.top                           p1.top > p2.down
         return False
     else:
         return True
 
 
+def scroll_bg():
+    global bg_change
+    s_timer = Timer(0.01, scroll_bg)
+    s_timer.start()
+    bg_change -= 3
+    if bg_change == -screen_width:
+        bg_change = 0
+    if not game_status:
+        s_timer.cancel()
+        return
 
-screen.blit(background, [0, 0])
+
+screen.blit(background[0], [0, 0])
 screen.blit(text_start, [200, 100])
 
 # Main loop
 
 while True:
-
-
-    screen.blit(background,(0,0))
-
+    pygame.time.Clock().tick(45)
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if not game_status:
@@ -130,6 +142,7 @@ while True:
                 run_status = True
                 run()
                 add_enemy()
+                scroll_bg()
 
             if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
                 if run_status:
@@ -143,7 +156,8 @@ while True:
             pygame.quit()
             sys.exit()
 
-    screen.blit(background, [0, 0])
+    screen.blit(background[0], [0 + bg_change, 0])
+    screen.blit(background[1], [screen_width + bg_change, 0])
     if game_status:
         if not run_status:
             screen.blit(character[1][j_time % 8], [500, 420 + j_change])
