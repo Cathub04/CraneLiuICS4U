@@ -35,12 +35,6 @@ text_start = FONT.render("Press any key to start >>>", False, WHITE, None)
 mixer.init()
 mixer.music.load('./src/music.mp3')
 mixer.music.play()
-mixer.music.set_volume(0.3)
-
-jumpsound=pygame.mixer.Sound('./src/jumpsound.mp3')
-monstersound=pygame.mixer.Sound('./src/monstersound.mp3')
-monstersound.set_volume((0.5))
-jumpsound.set_volume(1.5)
 
 # Enemy
 e1 = pygame.image.load('./src/purpmon.png')
@@ -82,25 +76,29 @@ def add_enemy():
         v_change += 15
     elif looph >= level - enemy[e_ran].get_height():
         v_change -= 15
-        monstersound.play()
     looph += v_change
-    if not time_status:
+    if not game_status:
         e_timer.cancel()
         return
 
 
 def run():
-    global r_time
+    global r_time, screen_width, looph, game_status
     r_timer = Timer(0.07, run)
     r_timer.start()
     if not run_status:
         r_timer.cancel()
         return
     r_time += 1
+    if is_collide(character[0][r_time % 10], enemy[e_ran],
+                  [500, level - character[0][r_time % 10].get_height()], [screen_width + e_change, looph]):
+        r_timer.cancel()
+        game_status = False
+        return
 
 
 def jump():
-    global j_time, run_status, old_j_time, j_change
+    global j_time, run_status, old_j_time, j_change, game_status
     j_timer = Timer(0.025, jump)
     j_timer.start()
     if j_time - old_j_time == 32:
@@ -114,6 +112,11 @@ def jump():
     else:
         j_change += 20
     j_time += 1
+    if is_collide(character[1][j_time % 8], enemy[e_ran],
+                  [500, level - character[1][j_time % 8].get_height() + j_change],  [screen_width + e_change, looph]):
+        j_timer.cancel()
+        game_status = False
+        return
 
 
 def is_collide(p1, p2, p1pos, p2pos):
@@ -161,15 +164,6 @@ while True:
                 add_enemy()
                 scroll_bg()
 
-
-            if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
-
-                if run_status:
-                    run_status = False
-                    jump()
-                    jumpsound.play()
-
-
         key = pygame.key.get_pressed()
         if event.type == pygame.QUIT or key[pygame.K_ESCAPE]:
             time_status = False
@@ -184,14 +178,8 @@ while True:
         if not run_status:
             screen.blit(character[1][j_time % 8], [500, level - character[1][j_time % 8].get_height() + j_change])
         else:
-
-            screen.blit(character[0][r_time % 10], [500, 420])
-            screen.blit(enemy[e_ran], [1050 + e_change, looph])
-
-
             screen.blit(character[0][r_time % 10], [500, level - character[0][r_time % 10].get_height()])
-            screen.blit(enemy[e_ran], [screen_width + e_change, looph])
-
+        screen.blit(enemy[e_ran], [screen_width + e_change, looph])
     else:
         screen.blit(text_start, [200, 100])
 
