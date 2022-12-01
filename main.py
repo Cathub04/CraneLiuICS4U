@@ -29,7 +29,7 @@ for i in range(10):
     character[0][i] = pygame.transform.scale_by(character[0][i], 0.65)
 for i in range(8):
     character[1].append(pygame.image.load(("./src/jump" + str(i + 1) + ".png")))
-    character[1][i] = pygame.transform.scale_by(character[1][i], 0.38)
+    character[1][i] = pygame.transform.scale_by(character[1][i], 0.30)
 text_start = FONT.render("Press Space to start >>>", False, WHITE, None)
 
 # Music
@@ -83,9 +83,16 @@ def add_enemy():
     if looph + enemy[e_ran].get_height() < level - 150:
         v_change = 15
     elif looph >= level - enemy[e_ran].get_height():
+<<<<<<< HEAD
         v_change = -15
     monstersound.play()
+=======
+        v_change -= 15
+        monstersound.play()
+
+>>>>>>> bf533e59a589b5f2c4204e53a1588c65a8293ffd
     looph += v_change
+
     if not game_status:
         e_timer.cancel()
         return
@@ -192,7 +199,11 @@ while True:
             screen.blit(character[1][j_time % 8], [500, level - character[1][j_time % 8].get_height() + j_change])
         else:
             screen.blit(character[0][r_time % 10], [500, level - character[0][r_time % 10].get_height()])
+<<<<<<< HEAD
         screen.blit(enemy[e_ran], [screen_width + e_change, looph + 20])
+=======
+        screen.blit(enemy[e_ran], [screen_width + e_change, looph+25])
+>>>>>>> bf533e59a589b5f2c4204e53a1588c65a8293ffd
     else:
         screen.blit(text_start, [200, 100])
 
