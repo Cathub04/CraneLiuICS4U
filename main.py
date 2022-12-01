@@ -119,7 +119,7 @@ def jump():
         return
 
 
-def is_collide(p1, p2, p1pos, p2pos, space):
+def is_collide(p1, p2, p1pos, p2pos):
     # (surface1, surface2, [x, y], [x, y])
     #   p1.left  > p2.right                       p1.right < p2.left
     if (p1pos[0] > p2pos[0] + p2.get_width()) or (p1pos[0] + p1.get_width() < p2pos[0]) \
