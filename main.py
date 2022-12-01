@@ -64,15 +64,15 @@ bg_change = 0
 # Functions
 def add_enemy():
     global e_ran, e_change, e_time, r_time, looph, v_change
-    e_timer = Timer(0.025, add_enemy)
+    e_timer = Timer(0.03, add_enemy)
     e_timer.start()
     if e_change == 0:
         e_ran = random.randrange(2)
     if e_change < -screen_width:
         e_change = 0
     else:
-        e_change -= 15
-    if looph + enemy[e_ran].get_height() < level - 250:
+        e_change -= 20
+    if looph + enemy[e_ran].get_height() < level - 150:
         v_change += 15
     elif looph >= level - enemy[e_ran].get_height():
         v_change -= 15
@@ -141,6 +141,11 @@ while True:
     pygame.time.Clock().tick(45)
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
+            if (event.key == pygame.K_SPACE or event.key == pygame.K_UP) and game_status:
+                if run_status:
+                    run_status = False
+                    jump()
+
             if not game_status:
                 game_status = True
                 time_status = True
@@ -148,11 +153,6 @@ while True:
                 run()
                 add_enemy()
                 scroll_bg()
-
-            if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
-                if run_status:
-                    run_status = False
-                    jump()
 
         key = pygame.key.get_pressed()
         if event.type == pygame.QUIT or key[pygame.K_ESCAPE]:
