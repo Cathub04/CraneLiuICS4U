@@ -41,7 +41,7 @@ fire = []
 for i in range(7):
     fire.append(pygame.image.load(("./src/fire" + str(i + 1) + ".jpg")))
     fire[i] = pygame.transform.scale_by(character[0][i], 0.65)
-
+addhealth = pygame.transform.scale_by(pygame.image.load('./src/addheart.png'), 1)
 
 # Music
 mixer.init()
@@ -55,7 +55,6 @@ jumpsound.set_volume(2.5)
 gameover = pygame.mixer.Sound('./src/gameover.mp3')
 beat = pygame.mixer.Sound('./src/beat.mp3')
 
-
 # Enemy
 e1 = pygame.image.load('./src/slime1.png')
 e2 = pygame.image.load('./src/slime2.png')
@@ -64,11 +63,6 @@ for i in range(len(enemy)):
     enemy[i] = pygame.transform.scale(enemy[i], [100, 100])
 e_ran = 0
 e_change = 0
-
-# addhealth
-
-addhealth = pygame.transform.scale_by(pygame.image.load('./src/addheart.png'),1)
-
 
 # Timer & status & change
 game_status = False
@@ -80,15 +74,44 @@ j_change = 0
 looph = level - enemy[e_ran].get_height()
 v_change = 0
 bg_change = 0
-
 f_time = 0
 pre_line = False
-
 addhealth_change = 0
 
 
-
 # Functions
+def start():
+    global game_status, r_time, run_status, j_time, old_j_time, j_change, v_change, bg_change, heart, score, \
+        score_count, e_ran, e_change, looph
+    # game_status = False
+    r_time = 0
+    # run_status = False
+    j_time = 0
+    old_j_time = 0
+    j_change = 0
+    v_change = 0
+    bg_change = 0
+    heart = 3
+    score = 0
+    score_count = False
+    e_ran = 0
+    e_change = 0
+    looph = level - enemy[e_ran].get_height()
+    if not mixer.music.get_busy():
+        mixer.music.play()
+
+
+def is_collide(p1, p2, p1pos, p2pos, v_space, h_space):
+    # (surface1, surface2, [x, y], [x, y])
+    #   p1.left  > p2.right                       p1.right < p2.left
+    if (p1pos[0] + v_space > p2pos[0] + p2.get_width()) or (p1pos[0] + p1.get_width() < p2pos[0] + v_space) \
+            or (p1pos[1] + p1.get_height() < p2pos[1] + h_space) or (p1pos[1] + h_space > p2pos[1] + p2.get_height()):
+        #       p1.down < p2.top                           p1.top > p2.down
+        return False
+    else:
+        return True
+
+
 def add_enemy():
     global e_ran, e_change, r_time, looph, v_change, score, score_count
     e_timer = Timer(0.03, add_enemy)
@@ -157,18 +180,8 @@ def jump():
         e_ran = random.randrange(2)
         e_change = 0
         heart -= 1
+        beat.play()
         return
-
-
-def is_collide(p1, p2, p1pos, p2pos, v_space, h_space):
-    # (surface1, surface2, [x, y], [x, y])
-    #   p1.left  > p2.right                       p1.right < p2.left
-    if (p1pos[0] + v_space > p2pos[0] + p2.get_width()) or (p1pos[0] + p1.get_width() < p2pos[0] + v_space) \
-            or (p1pos[1] + p1.get_height() < p2pos[1] + h_space) or (p1pos[1] + h_space > p2pos[1] + p2.get_height()):
-        #       p1.down < p2.top                           p1.top > p2.down
-        return False
-    else:
-        return True
 
 
 def scroll_bg():
@@ -199,31 +212,6 @@ def life():
         if game_status:
             gameover.play()
         game_status = False
-
-
-def start():
-    global game_status, r_time, run_status, j_time, old_j_time, j_change, v_change, bg_change, heart, score, \
-        score_count, e_ran, e_change, looph
-    # game_status = False
-    r_time = 0
-    # run_status = False
-    j_time = 0
-    old_j_time = 0
-    j_change = 0
-    v_change = 0
-    bg_change = 0
-    heart = 3
-    score = 0
-    score_count = False
-    e_ran = 0
-    e_change = 0
-    looph = level - enemy[e_ran].get_height()
-    if not mixer.music.get_busy():
-        mixer.music.play()
-
-
-def addhealth():
-    global timer
 
 
 screen.blit(background[0], [0, 0])
@@ -264,7 +252,7 @@ while True:
             screen.blit(character[1][j_time % 8], [500, level - character[1][j_time % 8].get_height() + j_change])
         else:
             screen.blit(character[0][r_time % 10], [500, level - character[0][r_time % 10].get_height()])
-        screen.blit(enemy[e_ran], [screen_width + e_change, looph+25])
+        screen.blit(enemy[e_ran], [screen_width + e_change, looph + 25])
         text_score = FONT.render(("Score: %d" % score), False, BLACK, None)
         screen.blit(text_score, [screen_width - text_score.get_width() - 20, 10])
     elif r_time == 0:
@@ -272,12 +260,9 @@ while True:
     else:
         screen.blit(text_end1, [200, 100])
         screen.blit(text_end2, [200, 170])
-    #addhealth
-    screen.blit(addhealth, [screen_width, level-addhealth.get_height()])
-
-    screen.blit(bar, [(screen_width-bar.get_width())/2, level])
+    screen.blit(addhealth, [screen_width, level - addhealth.get_height()])
+    screen.blit(bar, [(screen_width - bar.get_width()) / 2, level])
     life()
     pygame.display.update()
-
 
 # END
