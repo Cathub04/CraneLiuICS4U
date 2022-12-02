@@ -201,7 +201,7 @@ def start():
     score_count = False
     e_ran = 0
     e_change = 0
-    looph = level - enemy[e_ran].get_height()
+    looph = level - enemy[e_ran].get_height()aAZ
     if not mixer.music.get_busy():
         mixer.music.play()
 
