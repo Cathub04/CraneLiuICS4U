@@ -288,7 +288,7 @@ while True:
     #addhealth
     item_pos -= 7
     screen.blit(addhealth, [item_pos, level-addhealth.get_height()])
-    screen.blit(shieldicon, [screen_width - 100, level - shieldicon.get_height()])
+    screen.blit(shieldicon, [item_pos, level - shieldicon.get_height()])
     screen.blit(bar, [(screen_width-bar.get_width())/2, level])
     life()
     pygame.display.update()
