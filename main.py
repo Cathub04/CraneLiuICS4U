@@ -38,11 +38,6 @@ score = 0
 score_count = False
 bar = pygame.transform.scale_by(pygame.image.load("./src/bar.png"), 1.7)
 
-# shield_light = pygame.transform.scale(pygame.image.load("./src/light.png"),
-#                                       [character[0][0].get_height(), character[0][0].get_height()])
-# prop = []
-# prop.append(pygame.image.load("./src/light.png"))
-
 
 # Music
 mixer.init()
@@ -72,7 +67,6 @@ run_status = False
 j_time = 0
 old_j_time = 0
 j_change = 0
-e_time = 0
 looph = level - enemy[e_ran].get_height()
 v_change = 0
 bg_change = 0
@@ -80,7 +74,7 @@ bg_change = 0
 
 # Functions
 def add_enemy():
-    global e_ran, e_change, e_time, r_time, looph, v_change, score, score_count
+    global e_ran, e_change, r_time, looph, v_change, score, score_count
     e_timer = Timer(0.03, add_enemy)
     e_timer.start()
     if e_change == 0:
@@ -225,10 +219,8 @@ while True:
     if game_status:
         if not run_status:
             screen.blit(character[1][j_time % 8], [500, level - character[1][j_time % 8].get_height() + j_change])
-            # screen.blit(shield_light, [500 - 20, level - character[1][j_time % 8].get_height() + j_change - 20])
         else:
             screen.blit(character[0][r_time % 10], [500, level - character[0][r_time % 10].get_height()])
-            # screen.blit(shield_light, [500, level - character[0][r_time % 10].get_height()])
         screen.blit(enemy[e_ran], [screen_width + e_change, looph+25])
         text_score = FONT.render(("Score: %d" % score), False, BLACK, None)
         screen.blit(text_score, [screen_width - text_score.get_width() - 20, 10])
