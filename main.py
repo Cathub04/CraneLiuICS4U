@@ -202,6 +202,8 @@ def start():
     e_ran = 0
     e_change = 0
     looph = level - enemy[e_ran].get_height()
+    if not mixer.music.get_busy():
+        mixer.music.play()
 
 
 screen.blit(background[0], [0, 0])
