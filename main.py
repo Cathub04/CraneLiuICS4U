@@ -136,6 +136,7 @@ def jump():
 
 
 def is_collide(p1, p2, p1pos, p2pos):
+    global e_change
     # (surface1, surface2, [x, y], [x, y])
     #   p1.left  > p2.right                       p1.right < p2.left
     if (p1pos[0] + 25 > p2pos[0] + p2.get_width() - 50) or (p1pos[0] + p1.get_width() < p2pos[0] + 25) \
@@ -143,6 +144,8 @@ def is_collide(p1, p2, p1pos, p2pos):
         #       p1.down < p2.top                           p1.top > p2.down
         return False
     else:
+        e_change = 0
+        #reset enemy after collision
         return True
 
 
