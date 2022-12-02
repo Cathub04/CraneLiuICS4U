@@ -37,6 +37,10 @@ hearticon = pygame.transform.scale_by(pygame.image.load("./src/heart.png"), 0.5)
 score = 0
 score_count = False
 bar = pygame.transform.scale_by(pygame.image.load("./src/bar.png"), 1.7)
+fire = []
+for i in range(7):
+    fire.append(pygame.image.load(("./src/fire" + str(i + 1) + ".jpg")))
+    fire[i] = pygame.transform.scale_by(character[0][i], 0.65)
 
 
 # Music
@@ -71,6 +75,8 @@ j_change = 0
 looph = level - enemy[e_ran].get_height()
 v_change = 0
 bg_change = 0
+f_time = 0
+pre_line = False
 
 
 # Functions
@@ -201,7 +207,7 @@ def start():
     score_count = False
     e_ran = 0
     e_change = 0
-    looph = level - enemy[e_ran].get_height()aAZ
+    looph = level - enemy[e_ran].get_height()
     if not mixer.music.get_busy():
         mixer.music.play()
 
