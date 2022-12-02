@@ -21,7 +21,6 @@ background = [pygame.image.load('./src/bg.jpeg'), pygame.image.load('./src/bg.jp
 for i in range(len(background)):
     background[i] = pygame.transform.scale(background[i], [screen_width, screen_height])
 clock = pygame.time.Clock()
-
 FONT = pygame.font.SysFont("monospace", 50)
 character = [[], []]
 for i in range(10):
@@ -31,17 +30,36 @@ for i in range(8):
     character[1].append(pygame.image.load(("./src/jump" + str(i + 1) + ".png")))
     character[1][i] = pygame.transform.scale_by(character[1][i], 0.30)
 text_start = FONT.render("Press Space to start >>>", False, BLACK, None)
-hearticon= pygame.transform.scale_by(pygame.image.load("./src/heart.png"),0.5)
+text_end1 = FONT.render("You die...", False, BLACK, None)
+text_end2 = FONT.render("Press return to restart >>>", False, BLACK, None)
+heart = 3
+hearticon = pygame.transform.scale_by(pygame.image.load("./src/heart.png"), 0.5)
+score = 0
+score_count = False
+bar = pygame.transform.scale_by(pygame.image.load("./src/bar.png"), 1.7)
+fire = []
+for i in range(7):
+    fire.append(pygame.image.load(("./src/fire" + str(i + 1) + ".jpg")))
+    fire[i] = pygame.transform.scale_by(character[0][i], 0.65)
+addhealth = pygame.transform.scale_by(pygame.image.load('./src/addheart.png'), 1)
+shld = 0
+# shield_light = pygame.transform.scale(pygame.image.load("./src/light.png"),
+#                                       [character[0][0].get_height(), character[0][0].get_height()])
+# prop = []
+# prop.append(pygame.image.load("./src/light.png"))
+
+
 # Music
 mixer.init()
 mixer.music.load('./src/music.mp3')
 mixer.music.play()
-mixer.music.set_volume(0.3)
-
+mixer.music.set_volume(0.2)
 jumpsound = pygame.mixer.Sound('./src/jumpsound.mp3')
 monstersound = pygame.mixer.Sound('./src/monstersound.mp3')
-monstersound.set_volume(0.5)
-jumpsound.set_volume(1.5)
+monstersound.set_volume(0.7)
+jumpsound.set_volume(2.5)
+gameover = pygame.mixer.Sound('./src/gameover.mp3')
+beat = pygame.mixer.Sound('./src/beat.mp3')
 
 
 # Enemy
@@ -53,48 +71,62 @@ for i in range(len(enemy)):
 e_ran = 0
 e_change = 0
 
+# addhealth
 
-# Timer
+addhealth = pygame.transform.scale_by(pygame.image.load('./src/addheart.png'),1)
+
+
+# Timer & status & change
 game_status = False
 r_time = 0
 run_status = False
 j_time = 0
 old_j_time = 0
 j_change = 0
-e_time = 0
 looph = level - enemy[e_ran].get_height()
 v_change = 0
 bg_change = 0
-# time = 0
-# time_status = False
+
+f_time = 0
+pre_line = False
+
+addhealth_change = 0
+
 
 
 # Functions
 def add_enemy():
-    global e_ran, e_change, e_time, r_time, looph, v_change
+    global e_ran, e_change, r_time, looph, v_change, score, score_count
     e_timer = Timer(0.03, add_enemy)
     e_timer.start()
     if e_change == 0:
         e_ran = random.randrange(2)
     if e_change < -screen_width:
         e_change = 0
+        score_count = False
     else:
         e_change -= 20
+
+    if screen_width + e_change < 500 and not score_count:
+        score += 100
+        score_count = True
+
     if looph + enemy[e_ran].get_height() < level - 300:
         v_change += 15
+
     elif looph >= level - enemy[e_ran].get_height():
-        v_change -= 15
+        monstersound.stop()
         monstersound.play()
+        v_change -= 15
 
     looph += v_change
-
     if not game_status:
         e_timer.cancel()
         return
 
 
 def run():
-    global r_time, screen_width, looph, game_status, heart
+    global r_time, screen_width, looph, game_status, heart, e_ran, e_change
     r_timer = Timer(0.07, run)
     r_timer.start()
     if not run_status:
@@ -102,15 +134,16 @@ def run():
         return
     r_time += 1
     if is_collide(character[0][r_time % 10], enemy[e_ran],
-                  [500, level - character[0][r_time % 10].get_height()], [screen_width + e_change, looph]):
-        r_timer.cancel()
-        game_status = False
+                  [500, level - character[0][r_time % 10].get_height()], [screen_width + e_change, looph], 25, 50):
+        e_ran = random.randrange(2)
+        e_change = 0
         heart -= 1
+        beat.play()
         return
 
 
 def jump():
-    global j_time, run_status, old_j_time, j_change, game_status,heart
+    global j_time, run_status, old_j_time, j_change, game_status, heart, e_ran, e_change
     j_timer = Timer(0.025, jump)
     j_timer.start()
     if j_time - old_j_time == 32:
@@ -125,21 +158,20 @@ def jump():
         j_change += 20
     j_time += 1
     if is_collide(character[1][j_time % 8], enemy[e_ran],
-                  [500, level - character[1][j_time % 8].get_height() + j_change],  [screen_width + e_change, looph]):
-        j_timer.cancel()
-        game_status = False
-        j_time = 0
-        j_change = 0
-        old_j_time = 0
-        heart -= 1
+                  [500, level - character[1][j_time % 8].get_height() + j_change],
+                  [screen_width + e_change, looph], 25, 50):
+        e_ran = random.randrange(2)
+        e_change = 0
+        if shld != 1:
+            heart -= 1
         return
 
 
-def is_collide(p1, p2, p1pos, p2pos):
+def is_collide(p1, p2, p1pos, p2pos, v_space, h_space):
     # (surface1, surface2, [x, y], [x, y])
     #   p1.left  > p2.right                       p1.right < p2.left
-    if (p1pos[0] + 25 > p2pos[0] + p2.get_width() - 50) or (p1pos[0] + p1.get_width() < p2pos[0] + 25) \
-            or (p1pos[1] + p1.get_height() < p2pos[1] + 50) or (p1pos[1] + 50 > p2pos[1] + p2.get_height()):
+    if (p1pos[0] + v_space > p2pos[0] + p2.get_width()) or (p1pos[0] + p1.get_width() < p2pos[0] + v_space) \
+            or (p1pos[1] + p1.get_height() < p2pos[1] + h_space) or (p1pos[1] + h_space > p2pos[1] + p2.get_height()):
         #       p1.down < p2.top                           p1.top > p2.down
         return False
     else:
@@ -157,9 +189,9 @@ def scroll_bg():
         s_timer.cancel()
         return
 
-heart = 3
+
 def life():
-    global heart
+    global heart, game_status
     if heart == 3:
         screen.blit(hearticon, [10, 10])
         screen.blit(hearticon, [110, 10])
@@ -169,6 +201,49 @@ def life():
         screen.blit(hearticon, [110, 10])
     elif heart == 1:
         screen.blit(hearticon, [10, 10])
+    else:
+        mixer.music.stop()
+        if game_status:
+            gameover.play()
+        game_status = False
+shld_status = False
+def sheild():
+    global shld, shld_status
+    shld_timer = Timer(12, sheild)
+    if shld_status == False:
+        shld_timer.start()
+        shld = 1
+    else:
+        shld_timer.cancel()
+        shld = 0
+
+
+
+
+
+def start():
+    global game_status, r_time, run_status, j_time, old_j_time, j_change, v_change, bg_change, heart, score, \
+        score_count, e_ran, e_change, looph
+    # game_status = False
+    r_time = 0
+    # run_status = False
+    j_time = 0
+    old_j_time = 0
+    j_change = 0
+    v_change = 0
+    bg_change = 0
+    heart = 3
+    score = 0
+    score_count = False
+    e_ran = 0
+    e_change = 0
+    looph = level - enemy[e_ran].get_height()
+    if not mixer.music.get_busy():
+        mixer.music.play()
+
+
+def addhealth():
+    global timer
 
 
 screen.blit(background[0], [0, 0])
@@ -187,21 +262,20 @@ while True:
                     jumpsound.play()
 
             if not game_status:
+                start()
                 game_status = True
-                time_status = True
                 run_status = True
                 run()
                 add_enemy()
                 scroll_bg()
+                gameover.stop()
 
         key = pygame.key.get_pressed()
         if event.type == pygame.QUIT or key[pygame.K_ESCAPE]:
-            time_status = False
             run_status = False
             game_status = False
             pygame.quit()
             sys.exit()
-
 
     screen.blit(background[0], [0 + bg_change, 0])
     screen.blit(background[1], [screen_width + bg_change, 0])
@@ -211,8 +285,19 @@ while True:
         else:
             screen.blit(character[0][r_time % 10], [500, level - character[0][r_time % 10].get_height()])
         screen.blit(enemy[e_ran], [screen_width + e_change, looph+25])
-    else:
+        text_score = FONT.render(("Score: %d" % score), False, BLACK, None)
+        screen.blit(text_score, [screen_width - text_score.get_width() - 20, 10])
+    elif r_time == 0:
         screen.blit(text_start, [200, 100])
+    else:
+        screen.blit(text_end1, [200, 100])
+        screen.blit(text_end2, [200, 170])
+    #addhealth
+    screen.blit(addhealth, [screen_width, level-addhealth.get_height()])
+
+    screen.blit(bar, [(screen_width-bar.get_width())/2, level])
     life()
     pygame.display.update()
+
+
 # END

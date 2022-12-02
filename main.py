@@ -42,6 +42,12 @@ for i in range(7):
     fire.append(pygame.image.load(("./src/fire" + str(i + 1) + ".jpg")))
     fire[i] = pygame.transform.scale_by(character[0][i], 0.65)
 shld = 0
+shieldicon = pygame.transform.scale_by(pygame.image.load('./src/shield.png'),0.7)
+# shield_light = pygame.transform.scale(pygame.image.load("./src/light.png"),
+#                                       [character[0][0].get_height(), character[0][0].get_height()])
+# prop = []
+# prop.append(pygame.image.load("./src/light.png"))
+
 
 # Music
 mixer.init()
@@ -135,7 +141,7 @@ def add_enemy():
 
     if looph + enemy[e_ran].get_height() < level - 300:
         v_change += 15
-        
+
     elif looph >= level - enemy[e_ran].get_height():
         monstersound.stop()
         monstersound.play()
@@ -282,7 +288,7 @@ while True:
     #addhealth
     item_pos -= 7
     screen.blit(addhealth, [item_pos, level-addhealth.get_height()])
-
+    screen.blit(shieldicon, [screen_width - 100, level - shieldicon.get_height()])
     screen.blit(bar, [(screen_width-bar.get_width())/2, level])
     life()
     pygame.display.update()
