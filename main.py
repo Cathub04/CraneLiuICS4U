@@ -41,7 +41,7 @@ fire = []
 for i in range(7):
     fire.append(pygame.image.load(("./src/fire" + str(i + 1) + ".jpg")))
     fire[i] = pygame.transform.scale_by(character[0][i], 0.65)
-addhealth = pygame.transform.scale_by(pygame.image.load('./src/addheart.png'), 1)
+
 
 # Music
 mixer.init()
@@ -63,6 +63,11 @@ for i in range(len(enemy)):
     enemy[i] = pygame.transform.scale(enemy[i], [100, 100])
 e_ran = 0
 e_change = 0
+
+# addhealth
+
+addhealth = pygame.transform.scale_by(pygame.image.load('./src/addheart.png'),0.7)
+item_pos = 1100
 
 # Timer & status & change
 game_status = False
@@ -260,8 +265,11 @@ while True:
     else:
         screen.blit(text_end1, [200, 100])
         screen.blit(text_end2, [200, 170])
-    screen.blit(addhealth, [screen_width, level - addhealth.get_height()])
-    screen.blit(bar, [(screen_width - bar.get_width()) / 2, level])
+    #addhealth
+    item_pos -= 7
+    screen.blit(addhealth, [item_pos, level-addhealth.get_height()])
+
+    screen.blit(bar, [(screen_width-bar.get_width())/2, level])
     life()
     pygame.display.update()
 
