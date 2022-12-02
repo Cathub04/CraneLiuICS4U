@@ -36,7 +36,11 @@ heart = 3
 hearticon = pygame.transform.scale_by(pygame.image.load("./src/heart.png"), 0.5)
 score = 0
 score_count = False
-# text_score = FONT.render(("Score: %d" % score), False, BLACK, None)
+# shield_light = pygame.transform.scale(pygame.image.load("./src/light.png"),
+#                                       [character[0][0].get_height(), character[0][0].get_height()])
+# prop = []
+# prop.append(pygame.image.load("./src/light.png"))
+
 
 # Music
 mixer.init()
@@ -178,6 +182,10 @@ def life():
         game_status = False
 
 
+# def prop():
+#     # p_ran = random.randrange
+#
+
 screen.blit(background[0], [0, 0])
 screen.blit(text_start, [200, 100])
 
@@ -214,8 +222,10 @@ while True:
     if game_status:
         if not run_status:
             screen.blit(character[1][j_time % 8], [500, level - character[1][j_time % 8].get_height() + j_change])
+            # screen.blit(shield_light, [500 - 20, level - character[1][j_time % 8].get_height() + j_change - 20])
         else:
             screen.blit(character[0][r_time % 10], [500, level - character[0][r_time % 10].get_height()])
+            # screen.blit(shield_light, [500, level - character[0][r_time % 10].get_height()])
         screen.blit(enemy[e_ran], [screen_width + e_change, looph+25])
         text_score = FONT.render(("Score: %d" % score), False, BLACK, None)
         screen.blit(text_score, [screen_width - text_score.get_width() - 20, 10])
