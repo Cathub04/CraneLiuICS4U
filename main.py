@@ -91,6 +91,7 @@ def add_enemy():
 
     if looph + enemy[e_ran].get_height() < level - 300:
         v_change += 15
+        
     elif looph >= level - enemy[e_ran].get_height():
         v_change -= 15
         monstersound.play()
