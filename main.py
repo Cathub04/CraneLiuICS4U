@@ -53,6 +53,7 @@ monstersound = pygame.mixer.Sound('./src/monstersound.mp3')
 monstersound.set_volume(0.7)
 jumpsound.set_volume(2.5)
 gameover = pygame.mixer.Sound('./src/gameover.mp3')
+beat = pygame.mixer.Sound('./src/beat.mp3')
 
 
 # Enemy
@@ -63,6 +64,10 @@ for i in range(len(enemy)):
     enemy[i] = pygame.transform.scale(enemy[i], [100, 100])
 e_ran = 0
 e_change = 0
+
+# addhealth
+
+addhealth = pygame.transform.scale_by(pygame.image.load('./src/addheart.png'),1)
 
 
 # Timer & status & change
@@ -75,8 +80,12 @@ j_change = 0
 looph = level - enemy[e_ran].get_height()
 v_change = 0
 bg_change = 0
+<<<<<<< Updated upstream
 f_time = 0
 pre_line = False
+=======
+addhealth_change = 0
+>>>>>>> Stashed changes
 
 
 # Functions
@@ -123,6 +132,7 @@ def run():
         e_ran = random.randrange(2)
         e_change = 0
         heart -= 1
+        beat.play()
         return
 
 
@@ -212,6 +222,10 @@ def start():
         mixer.music.play()
 
 
+def addhealth()
+    global timer
+
+
 screen.blit(background[0], [0, 0])
 screen.blit(text_start, [200, 100])
 
@@ -258,6 +272,8 @@ while True:
     else:
         screen.blit(text_end1, [200, 100])
         screen.blit(text_end2, [200, 170])
+    #addhealth
+    screen.blit(addhealth, [screen_width, level-addhealth.get_height()])
 
     screen.blit(bar, [(screen_width-bar.get_width())/2, level])
     life()
