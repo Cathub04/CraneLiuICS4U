@@ -80,12 +80,12 @@ j_change = 0
 looph = level - enemy[e_ran].get_height()
 v_change = 0
 bg_change = 0
-<<<<<<< Updated upstream
+
 f_time = 0
 pre_line = False
-=======
+
 addhealth_change = 0
->>>>>>> Stashed changes
+
 
 
 # Functions
@@ -222,7 +222,7 @@ def start():
         mixer.music.play()
 
 
-def addhealth()
+def addhealth():
     global timer
 
 
