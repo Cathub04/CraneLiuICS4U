@@ -31,7 +31,7 @@ for i in range(8):
     character[1].append(pygame.image.load(("./src/jump" + str(i + 1) + ".png")))
     character[1][i] = pygame.transform.scale_by(character[1][i], 0.30)
 text_start = FONT.render("Press Space to start >>>", False, BLACK, None)
-hearticon= pygame.transform.scale_by(pygame.image.load("./src/heart.png"),0.5)
+hearticon = pygame.transform.scale_by(pygame.image.load("./src/heart.png"), 0.5)
 # Music
 mixer.init()
 mixer.music.load('./src/music.mp3')
@@ -110,7 +110,7 @@ def run():
 
 
 def jump():
-    global j_time, run_status, old_j_time, j_change, game_status,heart
+    global j_time, run_status, old_j_time, j_change, game_status, heart
     j_timer = Timer(0.025, jump)
     j_timer.start()
     if j_time - old_j_time == 32:
@@ -157,7 +157,10 @@ def scroll_bg():
         s_timer.cancel()
         return
 
+
 heart = 3
+
+
 def life():
     global heart
     if heart == 3:
@@ -201,7 +204,6 @@ while True:
             game_status = False
             pygame.quit()
             sys.exit()
-
 
     screen.blit(background[0], [0 + bg_change, 0])
     screen.blit(background[1], [screen_width + bg_change, 0])
