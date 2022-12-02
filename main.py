@@ -41,7 +41,7 @@ fire = []
 for i in range(7):
     fire.append(pygame.image.load(("./src/fire" + str(i + 1) + ".jpg")))
     fire[i] = pygame.transform.scale_by(character[0][i], 0.65)
-
+shld = 0
 
 # Music
 mixer.init()
@@ -184,7 +184,8 @@ def jump():
                   [screen_width + e_change, looph], 25, 50):
         e_ran = random.randrange(2)
         e_change = 0
-        heart -= 1
+        if shld != 1:
+            heart -= 1
         beat.play()
         return
 
@@ -217,6 +218,19 @@ def life():
         if game_status:
             gameover.play()
         game_status = False
+shld_status = False
+def sheild():
+    global shld, shld_status
+    shld_timer = Timer(12, sheild)
+    if shld_status == False:
+        shld_timer.start()
+        shld = 1
+    else:
+        shld_timer.cancel()
+        shld = 0
+
+
+
 
 
 screen.blit(background[0], [0, 0])
