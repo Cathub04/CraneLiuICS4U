@@ -183,10 +183,24 @@ def life():
         gameover.play()
 
 
+def start():
+    global game_status, r_time, run_status, j_time, old_j_time, j_change, v_change, bg_change, heart, score, \
+        score_count, e_ran, e_change, looph
+    # game_status = False
+    r_time = 0
+    # run_status = False
+    j_time = 0
+    old_j_time = 0
+    j_change = 0
+    v_change = 0
+    bg_change = 0
+    heart = 3
+    score = 0
+    score_count = False
+    e_ran = 0
+    e_change = 0
+    looph = level - enemy[e_ran].get_height()
 
-# def prop():
-#     # p_ran = random.randrange
-#
 
 screen.blit(background[0], [0, 0])
 screen.blit(text_start, [200, 100])
@@ -204,8 +218,8 @@ while True:
                     jumpsound.play()
 
             if not game_status:
+                start()
                 game_status = True
-                time_status = True
                 run_status = True
                 run()
                 add_enemy()
@@ -213,7 +227,6 @@ while True:
 
         key = pygame.key.get_pressed()
         if event.type == pygame.QUIT or key[pygame.K_ESCAPE]:
-            time_status = False
             run_status = False
             game_status = False
             pygame.quit()
