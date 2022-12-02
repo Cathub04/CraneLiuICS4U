@@ -2,42 +2,54 @@ import pygame
 import sys
 import random
 from threading import Timer
-# import func
+from pygame import mixer
 
 BLACK = pygame.Color(0, 0, 0)
 WHITE = pygame.Color(255, 255, 255)
 RED = pygame.Color(255, 0, 0)
 GREY = pygame.Color(150, 150, 150)
 
-
 pygame.init()
 
 # Preparation
 screen_width = 1200
-screen_height = 500
-level = 300
+screen_height = 600
+level = 500
 screen = pygame.display.set_mode([screen_width, screen_height])
 pygame.display.set_caption("Game")
-# background = [pygame.image.load('./src/background.jpeg'), pygame.image.load('./src/background.jpeg')]
 background = [pygame.image.load('./src/bg.jpeg'), pygame.image.load('./src/bg.jpeg')]
 for i in range(len(background)):
     background[i] = pygame.transform.scale(background[i], [screen_width, screen_height])
+clock = pygame.time.Clock()
 
 FONT = pygame.font.SysFont("monospace", 50)
 character = [[], []]
 for i in range(10):
     character[0].append(pygame.image.load(("./src/run" + str(i + 1) + ".png")))
+    character[0][i] = pygame.transform.scale_by(character[0][i], 0.65)
 for i in range(8):
     character[1].append(pygame.image.load(("./src/jump" + str(i + 1) + ".png")))
-    character[1][i] = pygame.transform.scale_by(character[1][i], 0.5)
-text_start = FONT.render("Press any key to start >>>", False, WHITE, None)
+    character[1][i] = pygame.transform.scale_by(character[1][i], 0.30)
+text_start = FONT.render("Press Space to start >>>", False, BLACK, None)
+hearticon= pygame.transform.scale_by(pygame.image.load("./src/heart.png"),0.5)
+# Music
+mixer.init()
+mixer.music.load('./src/music.mp3')
+mixer.music.play()
+mixer.music.set_volume(0.3)
+
+jumpsound = pygame.mixer.Sound('./src/jumpsound.mp3')
+monstersound = pygame.mixer.Sound('./src/monstersound.mp3')
+monstersound.set_volume(0.5)
+jumpsound.set_volume(1.5)
+
 
 # Enemy
-e1 = pygame.image.load('./src/purpmon.png')
-e2 = pygame.image.load('./src/pinkmon.png')
+e1 = pygame.image.load('./src/slime1.png')
+e2 = pygame.image.load('./src/slime2.png')
 enemy = [e1, e2]
 for i in range(len(enemy)):
-    enemy[i] = pygame.transform.scale(enemy[i], [120, 120])
+    enemy[i] = pygame.transform.scale(enemy[i], [100, 100])
 e_ran = 0
 e_change = 0
 
@@ -50,7 +62,7 @@ j_time = 0
 old_j_time = 0
 j_change = 0
 e_time = 0
-looph = 530
+looph = level - enemy[e_ran].get_height()
 v_change = 0
 bg_change = 0
 # time = 0
@@ -60,65 +72,74 @@ bg_change = 0
 # Functions
 def add_enemy():
     global e_ran, e_change, e_time, r_time, looph, v_change
-    e_timer = Timer(0.025, add_enemy)
+    e_timer = Timer(0.03, add_enemy)
     e_timer.start()
     if e_change == 0:
         e_ran = random.randrange(2)
     if e_change < -screen_width:
         e_change = 0
     else:
-        e_change -= 15
-    if looph < 350:
+        e_change -= 20
+    if looph + enemy[e_ran].get_height() < level - 300:
         v_change += 15
-    elif looph >= 530:
+    elif looph >= level - enemy[e_ran].get_height():
         v_change -= 15
+        monstersound.play()
+
     looph += v_change
-    if not time_status:
+
+    if not game_status:
         e_timer.cancel()
         return
 
 
 def run():
-    global r_time, game_status
+    global r_time, screen_width, looph, game_status, heart
     r_timer = Timer(0.07, run)
     r_timer.start()
     if not run_status:
         r_timer.cancel()
         return
-    # if is_collide(character[0][r_time % 10], enemy[e_ran], [500, 420], [1050 + e_change, looph]):
-    #     r_timer.cancel()
-    #     game_status = False
-    #     return
     r_time += 1
+    if is_collide(character[0][r_time % 10], enemy[e_ran],
+                  [500, level - character[0][r_time % 10].get_height()], [screen_width + e_change, looph]):
+        r_timer.cancel()
+        game_status = False
+        heart -= 1
+        return
 
 
 def jump():
-    global j_time, run_status, old_j_time, j_change, game_status
+    global j_time, run_status, old_j_time, j_change, game_status,heart
     j_timer = Timer(0.025, jump)
     j_timer.start()
-    if j_time - old_j_time == 32 \
-            or is_collide(character[1][j_time % 8], enemy[e_ran], [500, 420 + j_change], [1050 + e_change, looph]):
+    if j_time - old_j_time == 32:
         run_status = True
         j_timer.cancel()
         old_j_time = j_time
         run()
         return
-    # if is_collide(character[0][r_time % 10], enemy[e_ran], [500, 420], [1050 + e_change, looph]):
-    #     j_timer.cancel()
-    #     game_status = False
-    #     return
     if j_time % 32 < 16:
         j_change -= 20
     else:
         j_change += 20
     j_time += 1
+    if is_collide(character[1][j_time % 8], enemy[e_ran],
+                  [500, level - character[1][j_time % 8].get_height() + j_change],  [screen_width + e_change, looph]):
+        j_timer.cancel()
+        game_status = False
+        j_time = 0
+        j_change = 0
+        old_j_time = 0
+        heart -= 1
+        return
 
 
 def is_collide(p1, p2, p1pos, p2pos):
     # (surface1, surface2, [x, y], [x, y])
     #   p1.left  > p2.right                       p1.right < p2.left
-    if (p1pos[0] > p2pos[0] + p2.get_width()) or (p1pos[0] + p1.get_width() < p2pos[0]) \
-            or (p1pos[1] + p1.get_height() < p2pos[1]) or (p1pos[1] > p2pos[1] + p2.get_height()):
+    if (p1pos[0] + 25 > p2pos[0] + p2.get_width() - 50) or (p1pos[0] + p1.get_width() < p2pos[0] + 25) \
+            or (p1pos[1] + p1.get_height() < p2pos[1] + 50) or (p1pos[1] + 50 > p2pos[1] + p2.get_height()):
         #       p1.down < p2.top                           p1.top > p2.down
         return False
     else:
@@ -136,19 +157,35 @@ def scroll_bg():
         s_timer.cancel()
         return
 
+heart = 3
+def life():
+    global heart
+    if heart == 3:
+        screen.blit(hearticon, [10, 10])
+        screen.blit(hearticon, [110, 10])
+        screen.blit(hearticon, [210, 10])
+    elif heart == 2:
+        screen.blit(hearticon, [10, 10])
+        screen.blit(hearticon, [110, 10])
+    elif heart == 1:
+        screen.blit(hearticon, [10, 10])
+
 
 screen.blit(background[0], [0, 0])
 screen.blit(text_start, [200, 100])
 
 # Main loop
-speed = 10
-back = True
-while True:
-    clock.tick(speed)
 
+while True:
     pygame.time.Clock().tick(45)
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
+            if (event.key == pygame.K_SPACE or event.key == pygame.K_UP) and game_status:
+                if run_status:
+                    run_status = False
+                    jump()
+                    jumpsound.play()
+
             if not game_status:
                 game_status = True
                 time_status = True
@@ -156,11 +193,6 @@ while True:
                 run()
                 add_enemy()
                 scroll_bg()
-
-            if event.key == pygame.K_SPACE or event.key == pygame.K_UP:
-                if run_status:
-                    run_status = False
-                    jump()
 
         key = pygame.key.get_pressed()
         if event.type == pygame.QUIT or key[pygame.K_ESCAPE]:
@@ -170,15 +202,17 @@ while True:
             pygame.quit()
             sys.exit()
 
+
     screen.blit(background[0], [0 + bg_change, 0])
     screen.blit(background[1], [screen_width + bg_change, 0])
     if game_status:
         if not run_status:
-            screen.blit(character[1][j_time % 8], [500, level + j_change])
+            screen.blit(character[1][j_time % 8], [500, level - character[1][j_time % 8].get_height() + j_change])
         else:
-            screen.blit(character[0][r_time % 10], [500, level])
-        screen.blit(enemy[e_ran], [1050 + e_change, looph])
+            screen.blit(character[0][r_time % 10], [500, level - character[0][r_time % 10].get_height()])
+        screen.blit(enemy[e_ran], [screen_width + e_change, looph+25])
     else:
         screen.blit(text_start, [200, 100])
+    life()
     pygame.display.update()
 # END
