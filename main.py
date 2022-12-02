@@ -114,7 +114,7 @@ def run():
         return
     r_time += 1
     if is_collide(character[0][r_time % 10], enemy[e_ran],
-                  [500, level - character[0][r_time % 10].get_height()], [screen_width + e_change, looph]):
+                  [500, level - character[0][r_time % 10].get_height()], [screen_width + e_change, looph], 25, 50):
         e_ran = random.randrange(2)
         e_change = 0
         heart -= 1
@@ -137,18 +137,19 @@ def jump():
         j_change += 20
     j_time += 1
     if is_collide(character[1][j_time % 8], enemy[e_ran],
-                  [500, level - character[1][j_time % 8].get_height() + j_change],  [screen_width + e_change, looph]):
+                  [500, level - character[1][j_time % 8].get_height() + j_change],
+                  [screen_width + e_change, looph], 25, 50):
         e_ran = random.randrange(2)
         e_change = 0
         heart -= 1
         return
 
 
-def is_collide(p1, p2, p1pos, p2pos):
+def is_collide(p1, p2, p1pos, p2pos, v_space, h_space):
     # (surface1, surface2, [x, y], [x, y])
     #   p1.left  > p2.right                       p1.right < p2.left
-    if (p1pos[0] + 25 > p2pos[0] + p2.get_width() - 50) or (p1pos[0] + p1.get_width() < p2pos[0] + 25) \
-            or (p1pos[1] + p1.get_height() < p2pos[1] + 50) or (p1pos[1] + 50 > p2pos[1] + p2.get_height()):
+    if (p1pos[0] + v_space > p2pos[0] + p2.get_width()) or (p1pos[0] + p1.get_width() < p2pos[0] + v_space) \
+            or (p1pos[1] + p1.get_height() < p2pos[1] + h_space) or (p1pos[1] + h_space > p2pos[1] + p2.get_height()):
         #       p1.down < p2.top                           p1.top > p2.down
         return False
     else:
