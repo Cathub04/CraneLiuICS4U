@@ -30,15 +30,19 @@ for i in range(8):
     character[1].append(pygame.image.load(("./src/jump" + str(i + 1) + ".png")))
     character[1][i] = pygame.transform.scale_by(character[1][i], 0.30)
 text_start = FONT.render("Press Space to start >>>", False, BLACK, None)
-text_end = FONT.render("You die...", False, BLACK, None)
+text_end1 = FONT.render("You die...", False, BLACK, None)
+text_end2 = FONT.render("Press return to restart >>>", False, BLACK, None)
 heart = 3
 hearticon = pygame.transform.scale_by(pygame.image.load("./src/heart.png"), 0.5)
+score = 0
+score_count = False
+# text_score = FONT.render(("Score: %d" % score), False, BLACK, None)
+
 # Music
 mixer.init()
 mixer.music.load('./src/music.mp3')
 mixer.music.play()
 mixer.music.set_volume(0.3)
-
 jumpsound = pygame.mixer.Sound('./src/jumpsound.mp3')
 monstersound = pygame.mixer.Sound('./src/monstersound.mp3')
 monstersound.set_volume(0.5)
@@ -70,15 +74,21 @@ bg_change = 0
 
 # Functions
 def add_enemy():
-    global e_ran, e_change, e_time, r_time, looph, v_change
+    global e_ran, e_change, e_time, r_time, looph, v_change, score, score_count
     e_timer = Timer(0.03, add_enemy)
     e_timer.start()
     if e_change == 0:
         e_ran = random.randrange(2)
     if e_change < -screen_width:
         e_change = 0
+        score_count = False
     else:
         e_change -= 20
+
+    if screen_width + e_change < 500 and not score_count:
+        score += 100
+        score_count = True
+
     if looph + enemy[e_ran].get_height() < level - 300:
         v_change += 15
     elif looph >= level - enemy[e_ran].get_height():
@@ -86,7 +96,6 @@ def add_enemy():
         monstersound.play()
 
     looph += v_change
-
     if not game_status:
         e_timer.cancel()
         return
@@ -208,10 +217,13 @@ while True:
         else:
             screen.blit(character[0][r_time % 10], [500, level - character[0][r_time % 10].get_height()])
         screen.blit(enemy[e_ran], [screen_width + e_change, looph+25])
+        text_score = FONT.render(("Score: %d" % score), False, BLACK, None)
+        screen.blit(text_score, [screen_width - text_score.get_width() - 20, 10])
     elif r_time == 0:
         screen.blit(text_start, [200, 100])
     else:
-        screen.blit(text_end, [200, 100])
+        screen.blit(text_end1, [200, 100])
+        screen.blit(text_end2, [200, 170])
     life()
     pygame.display.update()
 # END
