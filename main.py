@@ -30,6 +30,7 @@ for i in range(8):
     character[1].append(pygame.image.load(("./src/jump" + str(i + 1) + ".png")))
     character[1][i] = pygame.transform.scale_by(character[1][i], 0.30)
 text_start = FONT.render("Press Space to start >>>", False, BLACK, None)
+text_end = FONT.render("You die...", False, BLACK, None)
 heart = 3
 hearticon = pygame.transform.scale_by(pygame.image.load("./src/heart.png"), 0.5)
 # Music
@@ -54,7 +55,7 @@ e_ran = 0
 e_change = 0
 
 
-# Timer
+# Timer & status & change
 game_status = False
 r_time = 0
 run_status = False
@@ -65,8 +66,6 @@ e_time = 0
 looph = level - enemy[e_ran].get_height()
 v_change = 0
 bg_change = 0
-# time = 0
-# time_status = False
 
 
 # Functions
@@ -94,7 +93,7 @@ def add_enemy():
 
 
 def run():
-    global r_time, screen_width, looph, game_status, heart
+    global r_time, screen_width, looph, game_status, heart, e_ran, e_change
     r_timer = Timer(0.07, run)
     r_timer.start()
     if not run_status:
@@ -103,14 +102,14 @@ def run():
     r_time += 1
     if is_collide(character[0][r_time % 10], enemy[e_ran],
                   [500, level - character[0][r_time % 10].get_height()], [screen_width + e_change, looph]):
-        r_timer.cancel()
-        game_status = False
+        e_ran = random.randrange(2)
+        e_change = 0
         heart -= 1
         return
 
 
 def jump():
-    global j_time, run_status, old_j_time, j_change, game_status, heart
+    global j_time, run_status, old_j_time, j_change, game_status, heart, e_ran, e_change
     j_timer = Timer(0.025, jump)
     j_timer.start()
     if j_time - old_j_time == 32:
@@ -126,11 +125,8 @@ def jump():
     j_time += 1
     if is_collide(character[1][j_time % 8], enemy[e_ran],
                   [500, level - character[1][j_time % 8].get_height() + j_change],  [screen_width + e_change, looph]):
-        j_timer.cancel()
-        game_status = False
-        j_time = 0
-        j_change = 0
-        old_j_time = 0
+        e_ran = random.randrange(2)
+        e_change = 0
         heart -= 1
         return
 
@@ -144,8 +140,6 @@ def is_collide(p1, p2, p1pos, p2pos):
         #       p1.down < p2.top                           p1.top > p2.down
         return False
     else:
-        e_change = 0
-        #reset enemy after collision
         return True
 
 
@@ -162,7 +156,7 @@ def scroll_bg():
 
 
 def life():
-    global heart
+    global heart, game_status
     if heart == 3:
         screen.blit(hearticon, [10, 10])
         screen.blit(hearticon, [110, 10])
@@ -172,6 +166,8 @@ def life():
         screen.blit(hearticon, [110, 10])
     elif heart == 1:
         screen.blit(hearticon, [10, 10])
+    else:
+        game_status = False
 
 
 screen.blit(background[0], [0, 0])
@@ -213,8 +209,10 @@ while True:
         else:
             screen.blit(character[0][r_time % 10], [500, level - character[0][r_time % 10].get_height()])
         screen.blit(enemy[e_ran], [screen_width + e_change, looph+25])
-    else:
+    elif r_time == 0:
         screen.blit(text_start, [200, 100])
+    else:
+        screen.blit(text_end, [200, 100])
     life()
     pygame.display.update()
 # END
