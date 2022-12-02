@@ -178,9 +178,10 @@ def life():
     elif heart == 1:
         screen.blit(hearticon, [10, 10])
     else:
-        game_status = False
         mixer.music.stop()
-        gameover.play()
+        if game_status:
+            gameover.play()
+        game_status = False
 
 
 def start():
@@ -224,6 +225,7 @@ while True:
                 run()
                 add_enemy()
                 scroll_bg()
+                gameover.stop()
 
         key = pygame.key.get_pressed()
         if event.type == pygame.QUIT or key[pygame.K_ESCAPE]:
