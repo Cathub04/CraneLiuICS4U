@@ -48,6 +48,7 @@ jumpsound = pygame.mixer.Sound('./src/jumpsound.mp3')
 monstersound = pygame.mixer.Sound('./src/monstersound.mp3')
 monstersound.set_volume(0.7)
 jumpsound.set_volume(2.5)
+gameover = pygame.mixer.Sound('./src/gameover.mp3')
 
 
 # Enemy
@@ -178,6 +179,9 @@ def life():
         screen.blit(hearticon, [10, 10])
     else:
         game_status = False
+        mixer.music.stop()
+        gameover.play()
+
 
 
 # def prop():
