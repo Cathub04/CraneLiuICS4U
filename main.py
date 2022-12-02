@@ -36,7 +36,7 @@ heart = 3
 hearticon = pygame.transform.scale_by(pygame.image.load("./src/heart.png"), 0.5)
 score = 0
 score_count = False
-bar = pygame.transform.scale_by(pygame.image.load("./src/bar.png"), 1)
+bar = pygame.transform.scale_by(pygame.image.load("./src/bar.png"), 1.7)
 
 # shield_light = pygame.transform.scale(pygame.image.load("./src/light.png"),
 #                                       [character[0][0].get_height(), character[0][0].get_height()])
