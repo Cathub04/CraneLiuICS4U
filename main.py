@@ -46,11 +46,11 @@ score_count = False
 mixer.init()
 mixer.music.load('./src/music.mp3')
 mixer.music.play()
-mixer.music.set_volume(0.3)
+mixer.music.set_volume(0.2)
 jumpsound = pygame.mixer.Sound('./src/jumpsound.mp3')
 monstersound = pygame.mixer.Sound('./src/monstersound.mp3')
-monstersound.set_volume(0.5)
-jumpsound.set_volume(1.5)
+monstersound.set_volume(0.7)
+jumpsound.set_volume(2.5)
 
 
 # Enemy
