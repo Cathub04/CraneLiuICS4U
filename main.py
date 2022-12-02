@@ -94,8 +94,9 @@ def add_enemy():
         v_change += 15
         
     elif looph >= level - enemy[e_ran].get_height():
-        v_change -= 15
+        monstersound.stop()
         monstersound.play()
+        v_change -= 15
 
     looph += v_change
     if not game_status:
