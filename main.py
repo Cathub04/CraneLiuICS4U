@@ -234,9 +234,9 @@ def life():
         game_status = False
 
 
-def sheild():
+def shield():
     global shld, shld_status
-    shld_timer = Timer(12, sheild)
+    shld_timer = Timer(12, shield)
     if not shld_status:
         shld_timer.start()
         shld = 1
