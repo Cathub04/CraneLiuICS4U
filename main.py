@@ -39,8 +39,8 @@ score_count = False
 bar = pygame.transform.scale_by(pygame.image.load("./src/bar.png"), 1.7)
 fire = []
 for i in range(7):
-    fire.append(pygame.image.load(("./src/fire" + str(i + 1) + ".jpg")))
-    fire[i] = pygame.transform.scale_by(character[0][i], 0.65)
+    fire.append(pygame.image.load(("./src/fire" + str(i + 1) + ".png")))
+    fire[i] = pygame.transform.scale_by(fire[i], 0.35)
 shld = 0
 shieldicon = pygame.transform.scale_by(pygame.image.load('./src/shield.png'), 0.7)
 # shield_light = pygame.transform.scale(pygame.image.load("./src/light.png"),
@@ -54,12 +54,12 @@ mixer.init()
 mixer.music.load('./src/music.mp3')
 mixer.music.play()
 mixer.music.set_volume(0.2)
-jumpsound = pygame.mixer.Sound('./src/jumpsound.mp3')
-monstersound = pygame.mixer.Sound('./src/monstersound.mp3')
+jumpsound = mixer.Sound('./src/jumpsound.mp3')
+monstersound = mixer.Sound('./src/monstersound.mp3')
 monstersound.set_volume(0.7)
 jumpsound.set_volume(2.5)
-gameover = pygame.mixer.Sound('./src/gameover.mp3')
-beat = pygame.mixer.Sound('./src/beat.mp3')
+gameover = mixer.Sound('./src/gameover.mp3')
+beat = mixer.Sound('./src/beat.mp3')
 
 # Enemy
 e1 = pygame.image.load('./src/slime1.png')
@@ -87,7 +87,6 @@ v_change = 0
 bg_change = 0
 f_time = 0
 f_change = 0
-f_status = False
 pre_line = level - character[0][0].get_height() / 2
 addhealth_change = 0
 shld_status = False
@@ -97,18 +96,14 @@ shld_status = False
 def start():
     global game_status, r_time, run_status, j_time, old_j_time, j_change, v_change, bg_change, heart, score, \
         score_count, e_ran, e_change, looph
-    # game_status = False
     r_time = 0
-    # run_status = False
     j_time = 0
     old_j_time = 0
     j_change = 0
     v_change = 0
-    bg_change = 0
     heart = 3
     score = 0
     score_count = False
-    e_ran = 0
     e_change = 0
     looph = level - enemy[e_ran].get_height()
     if not mixer.music.get_busy():
@@ -134,6 +129,8 @@ def add_enemy():
     e_timer.start()
     if not game_status:
         e_timer.cancel()
+        f_change = 0
+        f_time = 0
         return
 
     if e_change == 0:
@@ -159,7 +156,7 @@ def add_enemy():
     # Fire
     if f_time > 80 + 80:
         f_change -= 17
-    if f_change + fire[0].get_width() < -screen_width or not game_status:
+    if f_change + fire[0].get_width() < -screen_width:
         f_change = 0
         f_time = 0
     f_time += 1
@@ -219,18 +216,6 @@ def jump():
         return
 
 
-def scroll_bg():
-    global bg_change
-    s_timer = Timer(0.01, scroll_bg)
-    s_timer.start()
-    bg_change -= 3
-    if bg_change == -screen_width:
-        bg_change = 0
-    if not game_status:
-        s_timer.cancel()
-        return
-
-
 def life():
     global heart, game_status
     if heart == 3:
@@ -281,7 +266,6 @@ while True:
                 run_status = True
                 run()
                 add_enemy()
-                scroll_bg()
                 gameover.stop()
 
         key = pygame.key.get_pressed()
@@ -291,6 +275,11 @@ while True:
             pygame.quit()
             sys.exit()
 
+    # All commands of showing items on screen
+    if game_status:
+        bg_change -= 6
+        if bg_change == -screen_width:
+            bg_change = 0
     screen.blit(background[0], [0 + bg_change, 0])
     screen.blit(background[1], [screen_width + bg_change, 0])
     if game_status:
@@ -306,9 +295,9 @@ while True:
     else:
         screen.blit(text_end1, [200, 100])
         screen.blit(text_end2, [200, 170])
-    item_pos -= 7
-    screen.blit(addhealth, [item_pos, level-addhealth.get_height()])
-    screen.blit(shieldicon, [item_pos, level - shieldicon.get_height()])
+    # item_pos -= 7
+    # screen.blit(addhealth, [item_pos, level-addhealth.get_height()])
+    # screen.blit(shieldicon, [item_pos, level - shieldicon.get_height()])
     screen.blit(bar, [(screen_width-bar.get_width())/2, level])
     life()
     if r_time < 100:
@@ -323,7 +312,6 @@ while True:
             pygame.draw.rect(screen, pygame.Color(150, 52, 92), [0, pre_line, screen_width, 2])
     else:
         screen.blit(fire[f_time % 7], [screen_width + f_change - 20, pre_line - fire[0].get_height() / 2])
-
     pygame.display.update()
 
 # END
