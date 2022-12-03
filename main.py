@@ -42,7 +42,7 @@ for i in range(7):
     fire.append(pygame.image.load(("./src/fire" + str(i + 1) + ".jpg")))
     fire[i] = pygame.transform.scale_by(character[0][i], 0.65)
 shld = 0
-shieldicon = pygame.transform.scale_by(pygame.image.load('./src/shield.png'),0.7)
+shieldicon = pygame.transform.scale_by(pygame.image.load('./src/shield.png'), 0.7)
 # shield_light = pygame.transform.scale(pygame.image.load("./src/light.png"),
 #                                       [character[0][0].get_height(), character[0][0].get_height()])
 # prop = []
@@ -72,7 +72,7 @@ e_change = 0
 
 # addhealth
 
-addhealth = pygame.transform.scale_by(pygame.image.load('./src/addheart.png'),0.7)
+addhealth = pygame.transform.scale_by(pygame.image.load('./src/addheart.png'), 0.7)
 item_pos = 1100
 
 # Timer & status & change
@@ -86,8 +86,11 @@ looph = level - enemy[e_ran].get_height()
 v_change = 0
 bg_change = 0
 f_time = 0
-pre_line = False
+f_change = 0
+f_status = False
+pre_line = level - character[0][0].get_height() / 2
 addhealth_change = 0
+shld_status = False
 
 
 # Functions
@@ -112,11 +115,11 @@ def start():
         mixer.music.play()
 
 
-def is_collide(p1, p2, p1pos, p2pos, v_space, h_space):
+def is_collide(p1, p2, p1pos, p2pos):
     # (surface1, surface2, [x, y], [x, y])
     #   p1.left  > p2.right                       p1.right < p2.left
-    if (p1pos[0] + v_space > p2pos[0] + p2.get_width()) or (p1pos[0] + p1.get_width() < p2pos[0] + v_space) \
-            or (p1pos[1] + p1.get_height() < p2pos[1] + h_space) or (p1pos[1] + h_space > p2pos[1] + p2.get_height()):
+    if (p1pos[0] + 25 > p2pos[0] + p2.get_width()) or (p1pos[0] + p1.get_width() < p2pos[0] + 25) \
+            or (p1pos[1] + p1.get_height() < p2pos[1] + 50) or (p1pos[1] + 50 > p2pos[1] + p2.get_height()):
         #       p1.down < p2.top                           p1.top > p2.down
         return False
     else:
@@ -124,9 +127,15 @@ def is_collide(p1, p2, p1pos, p2pos, v_space, h_space):
 
 
 def add_enemy():
-    global e_ran, e_change, r_time, looph, v_change, score, score_count
+    # Slime + fire
+    # Slime
+    global e_ran, e_change, r_time, looph, v_change, score, score_count, f_time, f_change, heart
     e_timer = Timer(0.03, add_enemy)
     e_timer.start()
+    if not game_status:
+        e_timer.cancel()
+        return
+
     if e_change == 0:
         e_ran = random.randrange(2)
     if e_change < -screen_width:
@@ -141,15 +150,29 @@ def add_enemy():
 
     if looph + enemy[e_ran].get_height() < level - 300:
         v_change += 15
-
     elif looph >= level - enemy[e_ran].get_height():
         monstersound.stop()
         monstersound.play()
         v_change -= 15
-
     looph += v_change
-    if not game_status:
-        e_timer.cancel()
+
+    # Fire
+    if f_time > 80 + 80:
+        f_change -= 17
+    if f_change + fire[0].get_width() < -screen_width or not game_status:
+        f_change = 0
+        f_time = 0
+    f_time += 1
+    if (is_collide(character[1][j_time % 8], fire[f_time % 7],
+                   [500, level - character[1][j_time % 8].get_height() + j_change],
+                   [screen_width + f_change - 20, pre_line - fire[0].get_height() / 2]) and not run_status)\
+            or (is_collide(character[0][r_time % 10], fire[f_time % 7],
+                           [500, level - character[0][r_time % 10].get_height()],
+                           [screen_width + f_change - 20, pre_line - fire[0].get_height() / 2]) and run_status):
+        f_change = 0
+        f_time = 0
+        heart -= 1
+        beat.play()
         return
 
 
@@ -162,7 +185,7 @@ def run():
         return
     r_time += 1
     if is_collide(character[0][r_time % 10], enemy[e_ran],
-                  [500, level - character[0][r_time % 10].get_height()], [screen_width + e_change, looph], 25, 50):
+                  [500, level - character[0][r_time % 10].get_height()], [screen_width + e_change, looph]):
         e_ran = random.randrange(2)
         e_change = 0
         heart -= 1
@@ -187,7 +210,7 @@ def jump():
     j_time += 1
     if is_collide(character[1][j_time % 8], enemy[e_ran],
                   [500, level - character[1][j_time % 8].get_height() + j_change],
-                  [screen_width + e_change, looph], 25, 50):
+                  [screen_width + e_change, looph]):
         e_ran = random.randrange(2)
         e_change = 0
         if shld != 1:
@@ -224,19 +247,17 @@ def life():
         if game_status:
             gameover.play()
         game_status = False
-shld_status = False
+
+
 def sheild():
     global shld, shld_status
     shld_timer = Timer(12, sheild)
-    if shld_status == False:
+    if not shld_status:
         shld_timer.start()
         shld = 1
     else:
         shld_timer.cancel()
         shld = 0
-
-
-
 
 
 screen.blit(background[0], [0, 0])
@@ -285,12 +306,24 @@ while True:
     else:
         screen.blit(text_end1, [200, 100])
         screen.blit(text_end2, [200, 170])
-    #addhealth
     item_pos -= 7
     screen.blit(addhealth, [item_pos, level-addhealth.get_height()])
     screen.blit(shieldicon, [item_pos, level - shieldicon.get_height()])
     screen.blit(bar, [(screen_width-bar.get_width())/2, level])
     life()
+    if r_time < 100:
+        f_time = 0
+    elif f_time == 0:
+        pre_line = random.randint(int((level - character[0][0].get_height() / 2 - 300) / 100),
+                                  int((level - character[0][0].get_height() / 2) / 100)) * 100
+    if 80 < f_time < 80 + 80:
+        if f_time % 20 < 10:
+            pygame.draw.rect(screen, pygame.Color(250, 52, 92), [0, pre_line, screen_width, 2])
+        else:
+            pygame.draw.rect(screen, pygame.Color(150, 52, 92), [0, pre_line, screen_width, 2])
+    else:
+        screen.blit(fire[f_time % 7], [screen_width + f_change - 20, pre_line - fire[0].get_height() / 2])
+
     pygame.display.update()
 
 # END
