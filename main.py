@@ -67,7 +67,7 @@ e2 = pygame.image.load('./src/slime2.png')
 enemy = [e1, e2]
 for i in range(len(enemy)):
     enemy[i] = pygame.transform.scale(enemy[i], [100, 100])
-e_ran = 0
+e_ran = random.randrange(2)
 e_change = 0
 
 # addhealth
@@ -133,10 +133,9 @@ def add_enemy():
         f_time = 0
         return
 
-    if e_change == 0:
-        e_ran = random.randrange(2)
     if e_change < -screen_width:
         e_change = 0
+        e_ran = random.randrange(2)
         score_count = False
     else:
         e_change -= 20
