@@ -6,8 +6,6 @@ from pygame import mixer
 
 BLACK = pygame.Color(0, 0, 0)
 WHITE = pygame.Color(255, 255, 255)
-# RED = pygame.Color(255, 0, 0)
-# GREY = pygame.Color(150, 150, 150)
 
 pygame.init()
 
@@ -29,14 +27,15 @@ for i in range(10):
 for i in range(8):
     character[1].append(pygame.image.load(("./src/jump" + str(i + 1) + ".png")))
     character[1][i] = pygame.transform.scale_by(character[1][i], 0.30)
-text_start = FONT.render("Press Space to start >>>", False, BLACK, None)
+text_start = FONT.render("Press to start >>>", False, BLACK, None)
 text_end1 = FONT.render("You die...", False, BLACK, None)
-text_end2 = FONT.render("Press return to restart >>>", False, BLACK, None)
+text_end2 = FONT.render("Press to restart >>>", False, BLACK, None)
 heart = 3
 hearticon = pygame.transform.scale_by(pygame.image.load("./src/heart.png"), 0.5)
 score = 0
 score_count = False
 fire = []
+
 for i in range(7):
     fire.append(pygame.image.load(("./src/fire" + str(i + 1) + ".png")))
     fire[i] = pygame.transform.scale_by(fire[i], 0.35)
@@ -92,7 +91,6 @@ bg_change = 0
 f_time = 0
 f_change = 0
 pre_line = level - character[0][0].get_height() / 2
-addhealth_change = 0
 shld = 0
 i_change = 0
 i_time = 0
@@ -104,12 +102,10 @@ fs_status = False
 w_status = False
 
 
-
-
 # Functions
 def start():
     global game_status, r_time, run_status, j_time, old_j_time, j_change, v_change, bg_change, heart, score, \
-        score_count, e_ran, e_change, looph, f_time, f_change
+        score_count, e_ran, e_change, looph, f_time, f_change, shld, i_time, i_change, fs_status, w_status
     r_time = 0
     j_time = 0
     old_j_time = 0
@@ -122,6 +118,11 @@ def start():
     looph = level - enemy[e_ran].get_height()
     f_time = 0
     f_change = 0
+    shld = 0
+    i_change = 0
+    i_time = 0
+    fs_status = False
+    w_status = False
     if not mixer.music.get_busy():
         mixer.music.play()
 
