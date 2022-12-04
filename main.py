@@ -36,7 +36,6 @@ heart = 3
 hearticon = pygame.transform.scale_by(pygame.image.load("./src/heart.png"), 0.5)
 score = 0
 score_count = False
-bar = pygame.transform.scale_by(pygame.image.load("./src/bar.png"), 1.7)
 fire = []
 for i in range(7):
     fire.append(pygame.image.load(("./src/fire" + str(i + 1) + ".png")))
@@ -90,11 +89,14 @@ bg_change = 0
 f_time = 0
 f_change = 0
 pre_line = level - character[0][0].get_height() / 2
+addhealth_change = 0
+shld = 0
 i_change = 0
-shld_status = False
 i_time =0
 i_period = random.randint(2,6)
-
+randitem=[pygame.transform.scale_by(pygame.image.load('./src/shield.png'), 0.5),
+          pygame.transform.scale_by(pygame.image.load('./src/addheart.png'), 0.5)]
+icon = random.randrange(2)
 
 
 # Functions
@@ -129,7 +131,7 @@ def is_collide(p1, p2, p1pos, p2pos):
 
 
 def item():
-    global i_time, i_change, heart, game_status, i_period
+    global i_time, i_change, heart, game_status, i_period, randitem,icon, shld, r_time
     i_timer = Timer(0.03, item)
     i_timer.start()
     if not game_status:
@@ -138,28 +140,39 @@ def item():
 
     if i_time * 3 / 100 / i_period > 1:
         i_change -= 20
-    if i_change + health.get_width() < -screen_width:
+    if i_change + randitem[icon].get_width() < -screen_width:
         i_change = 0
         i_time = 0
         i_period = random.randint(2,6)
+        icon = random.randrange(2)
     i_time += 1
 
-    if (is_collide(character[1][i_time % 8], health,
+    if (is_collide(character[1][i_time % 8], randitem[icon],
                    [500, level - character[1][j_time % 8].get_height() + j_change],
-                   [screen_width + i_change, level-health.get_height()]) and not run_status) \
-            or (is_collide(character[0][r_time % 10], health,
+                   [screen_width + i_change, level-randitem[icon].get_height()]) and not run_status) \
+            or (is_collide(character[0][r_time % 10], randitem[icon],
                            [500, level - character[0][r_time % 10].get_height()],
-                           [screen_width + i_change, level-health.get_height()]) and run_status):
-        heart += 1
+                           [screen_width + i_change, level-randitem[icon].get_height()]) and run_status):
+
+        if icon == 0:
+            shld = 1
+        else:
+            heart += 1
         i_change = 0
         i_time = 0
         i_period = random.randint(2, 6)
-
+        icon = random.randrange(2)
+def shield():
+    global shld
+    if not shld == 1:
+        shld = 1
+    else:
+        shld = 0
 
 def fight():
     # Slime + fire
     # Slime
-    global e_ran, e_change, r_time, looph, v_change, score, score_count, f_time, f_change, heart
+    global e_ran, e_change, r_time, looph, v_change, score, score_count, f_time, f_change, heart, shld
     e_timer = Timer(0.03, fight)
     e_timer.start()
     if not game_status:
@@ -200,8 +213,11 @@ def fight():
                            [screen_width + f_change - 20, pre_line - fire[0].get_height() / 2]) and run_status):
         f_change = 0
         f_time = 0
-        heart -= 1
-        beat.play()
+        if not shld:
+            heart -= 1
+            beat.play()
+        else:
+            shld = 0
         return
 
     if (is_collide(character[1][j_time % 8], enemy[e_ran],
@@ -210,10 +226,14 @@ def fight():
             or (is_collide(character[0][r_time % 10], enemy[e_ran],
                            [500, level - character[0][r_time % 10].get_height()],
                            [screen_width + e_change, looph]) and run_status):
-        e_ran = random.randrange(2)
         e_change = 0
-        heart -= 1
-        beat.play()
+        e_ran = random.randrange(2)
+        if not shld:
+            heart -= 1
+            beat.play()
+        else:
+            shld = 0
+
         return
 
 
@@ -264,15 +284,7 @@ def life():
         game_status = False
 
 
-def shield():
-    global shld, shld_status
-    shld_timer = Timer(12, shield)
-    if not shld_status:
-        shld_timer.start()
-        shld = 1
-    else:
-        shld_timer.cancel()
-        shld = 0
+
 
 
 screen.blit(background[0], [0, 0])
@@ -335,7 +347,6 @@ while True:
         else:
             screen.blit(fire[f_time % 7], [screen_width + f_change - 20, pre_line - fire[0].get_height() / 2])
 
-        screen.blit(bar, [(screen_width - bar.get_width()) / 2, level])
         life()
     elif r_time == 0:
         screen.blit(text_start, [200, 100])
@@ -343,9 +354,8 @@ while True:
         screen.blit(text_end1, [200, 100])
         screen.blit(text_end2, [200, 170])
 
-    screen.blit(health, [screen_width + i_change, level-health.get_height()])
+    screen.blit(randitem[icon], [screen_width + i_change, level-randitem[icon].get_height()])
     # screen.blit(shieldicon, [item_pos, level - shieldicon.get_height()])
     pygame.display.update()
-
 
 # END
