@@ -71,7 +71,6 @@ e_ran = random.randrange(2)
 e_change = 0
 
 # addhealth
-
 addhealth = pygame.transform.scale_by(pygame.image.load('./src/addheart.png'), 0.7)
 item_pos = 1100
 
@@ -95,7 +94,7 @@ shld_status = False
 # Functions
 def start():
     global game_status, r_time, run_status, j_time, old_j_time, j_change, v_change, bg_change, heart, score, \
-        score_count, e_ran, e_change, looph
+        score_count, e_ran, e_change, looph, f_time, f_change
     r_time = 0
     j_time = 0
     old_j_time = 0
@@ -106,6 +105,8 @@ def start():
     score_count = False
     e_change = 0
     looph = level - enemy[e_ran].get_height()
+    f_time = 0
+    f_change = 0
     if not mixer.music.get_busy():
         mixer.music.play()
 
@@ -129,8 +130,6 @@ def add_enemy():
     e_timer.start()
     if not game_status:
         e_timer.cancel()
-        f_change = 0
-        f_time = 0
         return
 
     if e_change < -screen_width:
@@ -289,6 +288,22 @@ while True:
         screen.blit(enemy[e_ran], [screen_width + e_change, looph + 25])
         text_score = FONT.render(("Score: %d" % score), False, BLACK, None)
         screen.blit(text_score, [screen_width - text_score.get_width() - 20, 10])
+
+        if r_time < 100:
+            f_time = 0
+        elif f_time == 0:
+            pre_line = random.randint(int((level - character[0][0].get_height() / 2 - 300) / 100),
+                                      int((level - character[0][0].get_height() / 2) / 100)) * 100
+        if 80 < f_time < 80 + 80:
+            if f_time % 20 < 10:
+                pygame.draw.rect(screen, pygame.Color(250, 52, 92), [0, pre_line, screen_width, 2])
+            else:
+                pygame.draw.rect(screen, pygame.Color(150, 52, 92), [0, pre_line, screen_width, 2])
+        else:
+            screen.blit(fire[f_time % 7], [screen_width + f_change - 20, pre_line - fire[0].get_height() / 2])
+
+        screen.blit(bar, [(screen_width - bar.get_width()) / 2, level])
+        life()
     elif r_time == 0:
         screen.blit(text_start, [200, 100])
     else:
@@ -297,20 +312,6 @@ while True:
     # item_pos -= 7
     # screen.blit(addhealth, [item_pos, level-addhealth.get_height()])
     # screen.blit(shieldicon, [item_pos, level - shieldicon.get_height()])
-    screen.blit(bar, [(screen_width-bar.get_width())/2, level])
-    life()
-    if r_time < 100:
-        f_time = 0
-    elif f_time == 0:
-        pre_line = random.randint(int((level - character[0][0].get_height() / 2 - 300) / 100),
-                                  int((level - character[0][0].get_height() / 2) / 100)) * 100
-    if 80 < f_time < 80 + 80:
-        if f_time % 20 < 10:
-            pygame.draw.rect(screen, pygame.Color(250, 52, 92), [0, pre_line, screen_width, 2])
-        else:
-            pygame.draw.rect(screen, pygame.Color(150, 52, 92), [0, pre_line, screen_width, 2])
-    else:
-        screen.blit(fire[f_time % 7], [screen_width + f_change - 20, pre_line - fire[0].get_height() / 2])
     pygame.display.update()
 
 # END
