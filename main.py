@@ -346,7 +346,7 @@ while True:
         screen.blit(text_end1, [200, 100])
         screen.blit(text_end2, [200, 170])
     if shld != 0:
-        screen.blit(shieldicon, [screen_width-300, 100])
+        screen.blit(shieldicon,[0,shieldicon.get_height()/2+hearticon.get_height()])
 
     screen.blit(randitem[icon], [screen_width + i_change, level-randitem[icon].get_height()])
     pygame.display.update()
