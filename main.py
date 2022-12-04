@@ -92,10 +92,10 @@ pre_line = level - character[0][0].get_height() / 2
 addhealth_change = 0
 shld = 0
 i_change = 0
-i_time =0
-i_period = random.randint(2,6)
-randitem=[pygame.transform.scale_by(pygame.image.load('./src/shield.png'), 0.5),
-          pygame.transform.scale_by(pygame.image.load('./src/addheart.png'), 0.5)]
+i_time = 0
+i_period = random.randint(2, 6)
+randitem = [pygame.transform.scale_by(pygame.image.load('./src/shield.png'), 0.5),
+            pygame.transform.scale_by(pygame.image.load('./src/addheart.png'), 0.5)]
 icon = random.randrange(2)
 
 
@@ -131,7 +131,7 @@ def is_collide(p1, p2, p1pos, p2pos):
 
 
 def item():
-    global i_time, i_change, heart, game_status, i_period, randitem,icon, shld, r_time
+    global i_time, i_change, heart, game_status, i_period, randitem, icon, shld, r_time
     i_timer = Timer(0.03, item)
     i_timer.start()
     if not game_status:
@@ -143,7 +143,7 @@ def item():
     if i_change + randitem[icon].get_width() < -screen_width:
         i_change = 0
         i_time = 0
-        i_period = random.randint(2,6)
+        i_period = random.randint(2, 6)
         icon = random.randrange(2)
     i_time += 1
 
@@ -279,14 +279,11 @@ def life():
         game_status = False
 
 
-
-
-
 screen.blit(background[0], [0, 0])
 screen.blit(text_start, [200, 100])
 
-# Main loop
 
+# Main loop
 while True:
     pygame.time.Clock().tick(45)
     for event in pygame.event.get():
@@ -349,10 +346,9 @@ while True:
         screen.blit(text_end1, [200, 100])
         screen.blit(text_end2, [200, 170])
     if shld != 0:
-        screen.blit(shieldicon,[screen_width-300,100])
+        screen.blit(shieldicon, [screen_width-300, 100])
 
     screen.blit(randitem[icon], [screen_width + i_change, level-randitem[icon].get_height()])
-    # screen.blit(shieldicon, [item_pos, level - shieldicon.get_height()])
     pygame.display.update()
 
 # END
