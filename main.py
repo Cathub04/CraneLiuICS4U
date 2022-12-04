@@ -59,6 +59,9 @@ monstersound.set_volume(0.7)
 jumpsound.set_volume(2.5)
 gameover = mixer.Sound('./src/gameover.mp3')
 beat = mixer.Sound('./src/beat.mp3')
+firesound = mixer.Sound('./src/fireball.wav')
+addhealth = mixer.Sound('./src/addhealth.mp3')
+warning = mixer.Sound('./src/warning.mp3')
 
 
 # Enemy
@@ -97,6 +100,10 @@ i_period = random.randint(2, 6)
 randitem = [pygame.transform.scale_by(pygame.image.load('./src/shield.png'), 0.3),
             pygame.transform.scale_by(pygame.image.load('./src/addheart.png'), 0.5)]
 icon = random.randrange(2)
+fs_status = False
+w_status = False
+
+
 
 
 # Functions
@@ -158,6 +165,7 @@ def item():
             shld = 1
         else:
             heart += 1
+            addhealth.play()
         i_change = 0
         i_time = 0
         i_period = random.randint(2, 6)
@@ -167,7 +175,7 @@ def item():
 def fight():
     # Slime + fire
     # Slime
-    global e_ran, e_change, r_time, looph, v_change, score, score_count, f_time, f_change, heart, shld
+    global e_ran, e_change, r_time, looph, v_change, score, score_count, f_time, f_change, heart, shld, fs_status
     e_timer = Timer(0.03, fight)
     e_timer.start()
     if not game_status:
@@ -196,17 +204,22 @@ def fight():
     # Fire
     if f_time > 80 + 80:
         f_change -= 17
+        if not fs_status:
+            firesound.play()
+            fs_status = True
     if f_change + fire[0].get_width() < -screen_width:
         f_change = 0
         f_time = 0
+        fs_status = False
     f_time += 1
     if (is_collide(character[1][j_time % 8], fire[f_time % 7],
                    [500, level - character[1][j_time % 8].get_height() + j_change],
-                   [screen_width + f_change - 20, pre_line - fire[0].get_height() / 2]) and not run_status)\
+                   [screen_width + f_change - 20, pre_line - fire[0].get_height() / 2]) and not run_status) \
             or (is_collide(character[0][r_time % 10], fire[f_time % 7],
                            [500, level - character[0][r_time % 10].get_height()],
                            [screen_width + f_change - 20, pre_line - fire[0].get_height() / 2]) and run_status):
         f_change = 0
+        fs_status = False
         f_time = 0
         if not shld:
             heart -= 1
@@ -336,7 +349,12 @@ while True:
                 pygame.draw.rect(screen, pygame.Color(250, 52, 92), [0, pre_line, screen_width, 2])
             else:
                 pygame.draw.rect(screen, pygame.Color(150, 52, 92), [0, pre_line, screen_width, 2])
+            if not w_status:
+                warning.play()
+                w_status = True
         else:
+            warning.stop()
+            w_status = False
             screen.blit(fire[f_time % 7], [screen_width + f_change - 20, pre_line - fire[0].get_height() / 2])
 
         life()
