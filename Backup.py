@@ -162,6 +162,7 @@ def item():
         i_time = 0
         i_period = random.randint(2, 6)
         icon = random.randrange(2)
+
 def shield():
     global shld
     if not shld == 1:

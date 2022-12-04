@@ -41,7 +41,7 @@ for i in range(7):
     fire.append(pygame.image.load(("./src/fire" + str(i + 1) + ".png")))
     fire[i] = pygame.transform.scale_by(fire[i], 0.35)
 shld = 0
-shieldicon = pygame.transform.scale_by(pygame.image.load('./src/shield.png'), 0.7)
+shieldicon = pygame.transform.scale_by(pygame.image.load('./src/shield.png'), 0.3)
 # shield_light = pygame.transform.scale(pygame.image.load("./src/light.png"),
 #                                       [character[0][0].get_height(), character[0][0].get_height()])
 # prop = []
@@ -162,12 +162,7 @@ def item():
         i_time = 0
         i_period = random.randint(2, 6)
         icon = random.randrange(2)
-def shield():
-    global shld
-    if not shld == 1:
-        shld = 1
-    else:
-        shld = 0
+
 
 def fight():
     # Slime + fire
@@ -353,6 +348,8 @@ while True:
     else:
         screen.blit(text_end1, [200, 100])
         screen.blit(text_end2, [200, 170])
+    if shld != 0:
+        screen.blit(shieldicon,[screen_width-300,100])
 
     screen.blit(randitem[icon], [screen_width + i_change, level-randitem[icon].get_height()])
     # screen.blit(shieldicon, [item_pos, level - shieldicon.get_height()])
