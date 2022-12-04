@@ -6,8 +6,8 @@ from pygame import mixer
 
 BLACK = pygame.Color(0, 0, 0)
 WHITE = pygame.Color(255, 255, 255)
-RED = pygame.Color(255, 0, 0)
-GREY = pygame.Color(150, 150, 150)
+# RED = pygame.Color(255, 0, 0)
+# GREY = pygame.Color(150, 150, 150)
 
 pygame.init()
 
@@ -61,6 +61,7 @@ jumpsound.set_volume(2.5)
 gameover = mixer.Sound('./src/gameover.mp3')
 beat = mixer.Sound('./src/beat.mp3')
 
+
 # Enemy
 e1 = pygame.image.load('./src/slime1.png')
 e2 = pygame.image.load('./src/slime2.png')
@@ -70,9 +71,11 @@ for i in range(len(enemy)):
 e_ran = random.randrange(2)
 e_change = 0
 
+
 # addhealth
 addhealth = pygame.transform.scale_by(pygame.image.load('./src/addheart.png'), 0.7)
 item_pos = 1100
+
 
 # Timer & status & change
 game_status = False
@@ -122,11 +125,11 @@ def is_collide(p1, p2, p1pos, p2pos):
         return True
 
 
-def add_enemy():
+def fight():
     # Slime + fire
     # Slime
     global e_ran, e_change, r_time, looph, v_change, score, score_count, f_time, f_change, heart
-    e_timer = Timer(0.03, add_enemy)
+    e_timer = Timer(0.03, fight)
     e_timer.start()
     if not game_status:
         e_timer.cancel()
@@ -170,6 +173,18 @@ def add_enemy():
         beat.play()
         return
 
+    if (is_collide(character[1][j_time % 8], enemy[e_ran],
+                   [500, level - character[1][j_time % 8].get_height() + j_change],
+                   [screen_width + e_change, looph]) and not run_status)\
+            or (is_collide(character[0][r_time % 10], enemy[e_ran],
+                           [500, level - character[0][r_time % 10].get_height()],
+                           [screen_width + e_change, looph]) and run_status):
+        e_ran = random.randrange(2)
+        e_change = 0
+        heart -= 1
+        beat.play()
+        return
+
 
 def run():
     global r_time, screen_width, looph, game_status, heart, e_ran, e_change
@@ -179,13 +194,6 @@ def run():
         r_timer.cancel()
         return
     r_time += 1
-    if is_collide(character[0][r_time % 10], enemy[e_ran],
-                  [500, level - character[0][r_time % 10].get_height()], [screen_width + e_change, looph]):
-        e_ran = random.randrange(2)
-        e_change = 0
-        heart -= 1
-        beat.play()
-        return
 
 
 def jump():
@@ -203,15 +211,6 @@ def jump():
     else:
         j_change += 20
     j_time += 1
-    if is_collide(character[1][j_time % 8], enemy[e_ran],
-                  [500, level - character[1][j_time % 8].get_height() + j_change],
-                  [screen_width + e_change, looph]):
-        e_ran = random.randrange(2)
-        e_change = 0
-        if shld != 1:
-            heart -= 1
-        beat.play()
-        return
 
 
 def life():
@@ -263,7 +262,7 @@ while True:
                 game_status = True
                 run_status = True
                 run()
-                add_enemy()
+                fight()
                 gameover.stop()
 
         key = pygame.key.get_pressed()
