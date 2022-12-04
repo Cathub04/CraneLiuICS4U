@@ -94,7 +94,7 @@ shld = 0
 i_change = 0
 i_time = 0
 i_period = random.randint(2, 6)
-randitem = [pygame.transform.scale_by(pygame.image.load('./src/shield.png'), 0.5),
+randitem = [pygame.transform.scale_by(pygame.image.load('./src/shield.png'), 0.3),
             pygame.transform.scale_by(pygame.image.load('./src/addheart.png'), 0.5)]
 icon = random.randrange(2)
 
