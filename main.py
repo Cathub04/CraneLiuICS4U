@@ -73,7 +73,7 @@ e_change = 0
 
 
 # addhealth
-addhealth = pygame.transform.scale_by(pygame.image.load('./src/addheart.png'), 0.7)
+health = pygame.transform.scale_by(pygame.image.load('./src/addheart.png'), 0.5)
 item_pos = 1100
 
 
@@ -90,8 +90,11 @@ bg_change = 0
 f_time = 0
 f_change = 0
 pre_line = level - character[0][0].get_height() / 2
-addhealth_change = 0
+i_change = 0
 shld_status = False
+i_time =0
+i_period = random.randint(2,6)
+
 
 
 # Functions
@@ -123,6 +126,34 @@ def is_collide(p1, p2, p1pos, p2pos):
         return False
     else:
         return True
+
+
+def item():
+    global i_time, i_change, heart, game_status, i_period
+    i_timer = Timer(0.03, item)
+    i_timer.start()
+    if not game_status:
+        i_timer.cancel()
+        return
+
+    if i_time * 3 / 100 / i_period > 1:
+        i_change -= 20
+    if i_change + health.get_width() < -screen_width:
+        i_change = 0
+        i_time = 0
+        i_period = random.randint(2,6)
+    i_time += 1
+
+    if (is_collide(character[1][i_time % 8], health,
+                   [500, level - character[1][j_time % 8].get_height() + j_change],
+                   [screen_width + i_change, level-health.get_height()]) and not run_status) \
+            or (is_collide(character[0][r_time % 10], health,
+                           [500, level - character[0][r_time % 10].get_height()],
+                           [screen_width + i_change, level-health.get_height()]) and run_status):
+        heart += 1
+        i_change = 0
+        i_time = 0
+        i_period = random.randint(2, 6)
 
 
 def fight():
@@ -215,6 +246,8 @@ def jump():
 
 def life():
     global heart, game_status
+    if heart > 3:
+        heart = 3
     if heart == 3:
         screen.blit(hearticon, [10, 10])
         screen.blit(hearticon, [110, 10])
@@ -263,6 +296,7 @@ while True:
                 run_status = True
                 run()
                 fight()
+                item()
                 gameover.stop()
 
         key = pygame.key.get_pressed()
@@ -308,9 +342,10 @@ while True:
     else:
         screen.blit(text_end1, [200, 100])
         screen.blit(text_end2, [200, 170])
-    # item_pos -= 7
-    # screen.blit(addhealth, [item_pos, level-addhealth.get_height()])
+
+    screen.blit(health, [screen_width + i_change, level-health.get_height()])
     # screen.blit(shieldicon, [item_pos, level - shieldicon.get_height()])
     pygame.display.update()
+
 
 # END
