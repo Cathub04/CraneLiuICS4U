@@ -30,17 +30,10 @@ for i in range(8):
 text_start = FONT.render("Press [Any Key] to start >>>", False, BLACK, None)
 text_end1 = FONT.render("You die...", False, BLACK, None)
 text_end2 = FONT.render("Press [Any Key] to restart >>>", False, BLACK, None)
-heart = 3
 hearticon = pygame.transform.scale_by(pygame.image.load("./src/heart.png"), 0.5)
-score = 0
-score_count = False
-fire = []
-
-for i in range(7):
-    fire.append(pygame.image.load(("./src/fire" + str(i + 1) + ".png")))
-    fire[i] = pygame.transform.scale_by(fire[i], 0.35)
-shld = 0
 shieldicon = pygame.transform.scale_by(pygame.image.load('./src/shield.png'), 0.3)
+randitem = [pygame.transform.scale_by(pygame.image.load('./src/shield.png'), 0.3),
+            pygame.transform.scale_by(pygame.image.load('./src/addheart.png'), 0.5)]
 
 
 # Music
@@ -49,14 +42,14 @@ mixer.music.load('./src/music.mp3')
 mixer.music.play()
 mixer.music.set_volume(0.2)
 jumpsound = mixer.Sound('./src/jumpsound.mp3')
+jumpsound.set_volume(2.5)
 monstersound = mixer.Sound('./src/monstersound.mp3')
 monstersound.set_volume(0.7)
-jumpsound.set_volume(2.5)
 gameover = mixer.Sound('./src/gameover.mp3')
 beat = mixer.Sound('./src/beat.mp3')
 firesound = mixer.Sound('./src/fireball.wav')
 addhealth = mixer.Sound('./src/addhealth.mp3')
-warning = mixer.Sound('./src/warning.mp3')
+warning = mixer.Sound('./src/warning.wav')
 warning.set_volume(0.12)
 
 
@@ -65,11 +58,16 @@ enemy = []
 for i in range(2):
     enemy.append(pygame.image.load('./src/slime' + str(i + 1) + '.png'))
     enemy[i] = pygame.transform.scale(enemy[i], [100, 100])
+fire = []
+for i in range(7):
+    fire.append(pygame.image.load(("./src/fire" + str(i + 1) + ".png")))
+    fire[i] = pygame.transform.scale_by(fire[i], 0.35)
 
 
-# Timer & status & change
+# Timer & status & change (number & bool variables)
 game_status = False
 bg_change = 0
+heart = 3
 e_ran = random.randrange(2)
 e_change = 0
 looph = level - enemy[e_ran].get_height()
@@ -82,12 +80,12 @@ j_change = 0
 f_time = 0
 f_change = 0
 pre_line = level - character[0][0].get_height() / 2
+score = 0
+score_count = False
 shld = 0
 i_change = 0
 i_time = 0
 i_period = random.randint(2, 6)
-randitem = [pygame.transform.scale_by(pygame.image.load('./src/shield.png'), 0.3),
-            pygame.transform.scale_by(pygame.image.load('./src/addheart.png'), 0.5)]
 icon = random.randrange(2)
 fs_status = False
 w_status = False
@@ -95,20 +93,22 @@ w_status = False
 
 # Functions
 def start():
-    global game_status, r_time, run_status, j_time, old_j_time, j_change, v_change, bg_change, heart, score, \
-        score_count, e_ran, e_change, looph, f_time, f_change, shld, i_time, i_change, fs_status, w_status
+    global game_status, r_time, run_status, j_time, old_j_time, j_change, v_change, heart, score, score_count,\
+        e_change, looph, f_time, f_change, shld, i_time, i_change, fs_status, w_status
+    game_status = True
+    run_status = True
+    heart = 3
+    e_change = 0
+    looph = level - enemy[e_ran].get_height()
+    v_change = 0
     r_time = 0
     j_time = 0
     old_j_time = 0
     j_change = 0
-    v_change = 0
-    heart = 3
-    score = 0
-    score_count = False
-    e_change = 0
-    looph = level - enemy[e_ran].get_height()
     f_time = 0
     f_change = 0
+    score = 0
+    score_count = False
     shld = 0
     i_change = 0
     i_time = 0
@@ -298,8 +298,6 @@ while True:
 
             if not game_status:
                 start()
-                game_status = True
-                run_status = True
                 run()
                 fight()
                 item()
