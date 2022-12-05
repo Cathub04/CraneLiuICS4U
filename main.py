@@ -57,14 +57,13 @@ beat = mixer.Sound('./src/beat.mp3')
 firesound = mixer.Sound('./src/fireball.wav')
 addhealth = mixer.Sound('./src/addhealth.mp3')
 warning = mixer.Sound('./src/warning.mp3')
-warning.set_volume(0.15)
+warning.set_volume(0.12)
 
 
 # Enemy
-e1 = pygame.image.load('./src/slime1.png')
-e2 = pygame.image.load('./src/slime2.png')
-enemy = [e1, e2]
-for i in range(len(enemy)):
+enemy = []
+for i in range(2):
+    enemy.append(pygame.image.load('./src/slime' + str(i + 1) + '.png'))
     enemy[i] = pygame.transform.scale(enemy[i], [100, 100])
 
 
@@ -115,8 +114,6 @@ def start():
     i_time = 0
     fs_status = False
     w_status = False
-    if not mixer.music.get_busy():
-        mixer.music.play()
 
 
 def is_collide(p1, p2, p1pos, p2pos):
@@ -194,16 +191,16 @@ def fight():
     looph += v_change
 
     # Fire
+    f_time += 1
     if f_time > 80 + 80:
         f_change -= 17
         if not fs_status:
             firesound.play()
             fs_status = True
-    if f_change + fire[0].get_width() < -screen_width:
+    if f_change < -(screen_width + fire[0].get_width()):
         f_change = 0
         f_time = 0
         fs_status = False
-    f_time += 1
     if (is_collide(character[1][j_time % 8], fire[f_time % 7],
                    [500, level - character[1][j_time % 8].get_height() + j_change],
                    [screen_width + f_change - 20, pre_line - fire[0].get_height() / 2]) and not run_status) \
@@ -218,7 +215,6 @@ def fight():
             beat.play()
         else:
             shld = 0
-        return
 
     if (is_collide(character[1][j_time % 8], enemy[e_ran],
                    [500, level - character[1][j_time % 8].get_height() + j_change],
@@ -233,8 +229,6 @@ def fight():
             beat.play()
         else:
             shld = 0
-
-        return
 
 
 def run():
@@ -313,7 +307,6 @@ while True:
 
         key = pygame.key.get_pressed()
         if event.type == pygame.QUIT or key[pygame.K_ESCAPE]:
-            # run_status = False
             game_status = False
             pygame.quit()
             sys.exit()
@@ -326,6 +319,8 @@ while True:
         bg_change -= 6
         if bg_change == -screen_width:
             bg_change = 0
+        if not mixer.music.get_busy():
+            mixer.music.play()
 
         if not run_status:
             screen.blit(character[1][j_time % 8], [500, level - character[1][j_time % 8].get_height() + j_change])
