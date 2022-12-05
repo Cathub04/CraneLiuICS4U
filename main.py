@@ -1,6 +1,7 @@
 import pygame
 import sys
 import random
+import datetime
 from threading import Timer
 from pygame import mixer
 
@@ -34,6 +35,12 @@ hearticon = pygame.transform.scale_by(pygame.image.load("./src/heart.png"), 0.5)
 shieldicon = pygame.transform.scale_by(pygame.image.load('./src/shield.png'), 0.3)
 randitem = [pygame.transform.scale_by(pygame.image.load('./src/shield.png'), 0.3),
             pygame.transform.scale_by(pygame.image.load('./src/addheart.png'), 0.5)]
+current = datetime.datetime.now()
+l_count = 0
+text_max_score = FONT.render("", False, BLACK, None)
+h_score = []
+hs_status = False
+text_h_score = pygame.font.SysFont("monospace", 30).render("", False, BLACK, None)
 
 
 # Music
@@ -94,7 +101,7 @@ w_status = False
 # Functions
 def start():
     global game_status, r_time, run_status, j_time, old_j_time, j_change, v_change, heart, score, score_count,\
-        e_change, looph, f_time, f_change, shld, i_time, i_change, fs_status, w_status
+        e_change, looph, f_time, f_change, shld, i_time, i_change, fs_status, w_status, hs_status, h_score, l_count
     game_status = True
     run_status = True
     heart = 3
@@ -114,6 +121,9 @@ def start():
     i_time = 0
     fs_status = False
     w_status = False
+    hs_status = False
+    h_score = []
+    l_count = 0
 
 
 def is_collide(p1, p2, p1pos, p2pos):
@@ -150,7 +160,6 @@ def item():
             or (is_collide(character[0][r_time % 10], randitem[icon],
                            [500, level - character[0][r_time % 10].get_height()],
                            [screen_width + i_change, level-randitem[icon].get_height()]) and run_status):
-
         if icon == 0:
             shld = 1
         else:
@@ -279,6 +288,22 @@ def life():
         if game_status:
             gameover.play()
         game_status = False
+        history()
+
+
+def history():
+    global hs_status, l_count, text_max_score
+    f = open("history.txt", "a")
+    f.write(str(score) + " " +
+            str(current.date()) + " " +
+            str(current.time())[:8] + "\n")
+    f = open("history.txt", "r")
+    for line in f.readlines():
+        h_score.append(line.split())
+        h_score[l_count][0] = int(h_score[l_count][0])
+        l_count += 1
+    h_score.sort(reverse=True)
+    text_max_score = FONT.render("Best score:\n" + str(h_score[0][0]), False, BLACK, None)
 
 
 screen.blit(background[0], [0, 0])
@@ -350,11 +375,19 @@ while True:
             screen.blit(fire[f_time % 7], [screen_width + f_change - 20, pre_line - fire[0].get_height() / 2])
 
     elif r_time == 0:
-        screen.blit(text_start, [200, 100])
+        screen.blit(text_start, [200, 80])
     else:
         warning.stop()
-        screen.blit(text_end1, [200, 100])
-        screen.blit(text_end2, [200, 170])
+        screen.blit(text_end1, [200, 80])
+        screen.blit(text_end2, [200, 150])
+        screen.blit(text_max_score, [200, 220])
+        for i in range(3):
+            screen.blit(pygame.font.SysFont("monospace", 40, True).render("History Scores:", False, WHITE, None),
+                        [200, 290])
+            if i < len(h_score):
+                text_h_score = pygame.font.SysFont("monospace", 40, True).render(str(h_score[i]), False, WHITE, None)
+                screen.blit(text_h_score, [220, 340 + 50 * i])
+
     if shld != 0:
         screen.blit(shieldicon, [0, shieldicon.get_height()/2+hearticon.get_height()])
 
