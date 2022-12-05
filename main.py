@@ -27,9 +27,9 @@ for i in range(10):
 for i in range(8):
     character[1].append(pygame.image.load(("./src/jump" + str(i + 1) + ".png")))
     character[1][i] = pygame.transform.scale_by(character[1][i], 0.30)
-text_start = FONT.render("Press to start >>>", False, BLACK, None)
+text_start = FONT.render("Press [Any Key] to start >>>", False, BLACK, None)
 text_end1 = FONT.render("You die...", False, BLACK, None)
-text_end2 = FONT.render("Press to restart >>>", False, BLACK, None)
+text_end2 = FONT.render("Press [Any Key] to restart >>>", False, BLACK, None)
 heart = 3
 hearticon = pygame.transform.scale_by(pygame.image.load("./src/heart.png"), 0.5)
 score = 0
@@ -41,10 +41,6 @@ for i in range(7):
     fire[i] = pygame.transform.scale_by(fire[i], 0.35)
 shld = 0
 shieldicon = pygame.transform.scale_by(pygame.image.load('./src/shield.png'), 0.3)
-# shield_light = pygame.transform.scale(pygame.image.load("./src/light.png"),
-#                                       [character[0][0].get_height(), character[0][0].get_height()])
-# prop = []
-# prop.append(pygame.image.load("./src/light.png"))
 
 
 # Music
@@ -61,6 +57,7 @@ beat = mixer.Sound('./src/beat.mp3')
 firesound = mixer.Sound('./src/fireball.wav')
 addhealth = mixer.Sound('./src/addhealth.mp3')
 warning = mixer.Sound('./src/warning.mp3')
+warning.set_volume(0.15)
 
 
 # Enemy
@@ -69,25 +66,20 @@ e2 = pygame.image.load('./src/slime2.png')
 enemy = [e1, e2]
 for i in range(len(enemy)):
     enemy[i] = pygame.transform.scale(enemy[i], [100, 100])
-e_ran = random.randrange(2)
-e_change = 0
-
-
-# addhealth
-health = pygame.transform.scale_by(pygame.image.load('./src/addheart.png'), 0.5)
-item_pos = 1100
 
 
 # Timer & status & change
 game_status = False
+bg_change = 0
+e_ran = random.randrange(2)
+e_change = 0
+looph = level - enemy[e_ran].get_height()
+v_change = 0
 r_time = 0
 run_status = False
 j_time = 0
 old_j_time = 0
 j_change = 0
-looph = level - enemy[e_ran].get_height()
-v_change = 0
-bg_change = 0
 f_time = 0
 f_change = 0
 pre_line = level - character[0][0].get_height() / 2
@@ -174,7 +166,6 @@ def item():
 
 
 def fight():
-    # Slime + fire
     # Slime
     global e_ran, e_change, r_time, looph, v_change, score, score_count, f_time, f_change, heart, shld, fs_status
     e_timer = Timer(0.03, fight)
@@ -250,7 +241,7 @@ def run():
     global r_time, screen_width, looph, game_status, heart, e_ran, e_change
     r_timer = Timer(0.07, run)
     r_timer.start()
-    if not run_status:
+    if not run_status or not game_status:
         r_timer.cancel()
         return
     r_time += 1
@@ -260,6 +251,9 @@ def jump():
     global j_time, run_status, old_j_time, j_change, game_status, heart, e_ran, e_change
     j_timer = Timer(0.025, jump)
     j_timer.start()
+    if not game_status:
+        j_timer.cancel()
+        return
     if j_time - old_j_time == 32:
         run_status = True
         j_timer.cancel()
@@ -299,7 +293,7 @@ screen.blit(text_start, [200, 100])
 
 # Main loop
 while True:
-    pygame.time.Clock().tick(45)
+    pygame.time.Clock().tick(50)
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if (event.key == pygame.K_SPACE or event.key == pygame.K_UP) and game_status:
@@ -319,32 +313,36 @@ while True:
 
         key = pygame.key.get_pressed()
         if event.type == pygame.QUIT or key[pygame.K_ESCAPE]:
-            run_status = False
+            # run_status = False
             game_status = False
             pygame.quit()
             sys.exit()
 
     # All commands of showing items on screen
+    screen.blit(background[0], [0 + bg_change, 0])
+    screen.blit(background[1], [screen_width + bg_change, 0])
+
     if game_status:
         bg_change -= 6
         if bg_change == -screen_width:
             bg_change = 0
-    screen.blit(background[0], [0 + bg_change, 0])
-    screen.blit(background[1], [screen_width + bg_change, 0])
-    if game_status:
+
         if not run_status:
             screen.blit(character[1][j_time % 8], [500, level - character[1][j_time % 8].get_height() + j_change])
         else:
             screen.blit(character[0][r_time % 10], [500, level - character[0][r_time % 10].get_height()])
+
         screen.blit(enemy[e_ran], [screen_width + e_change, looph + 25])
         text_score = FONT.render(("Score: %d" % score), False, BLACK, None)
         screen.blit(text_score, [screen_width - text_score.get_width() - 20, 10])
+        screen.blit(randitem[icon], [screen_width + i_change, level - randitem[icon].get_height()])
+        life()
 
         if r_time < 100:
             f_time = 0
         elif f_time == 0:
-            pre_line = random.randint(int((level - character[0][0].get_height() / 2 - 300) / 100),
-                                      int((level - character[0][0].get_height() / 2) / 100)) * 100
+            pre_line = random.randint(int((level - character[0][0].get_height() / 2 - 200) / 50),
+                                      int((level - character[0][0].get_height() / 2) / 50)) * 50
         if 80 < f_time < 80 + 80:
             if f_time % 20 < 10:
                 pygame.draw.rect(screen, pygame.Color(250, 52, 92), [0, pre_line, screen_width, 2])
@@ -358,16 +356,15 @@ while True:
             w_status = False
             screen.blit(fire[f_time % 7], [screen_width + f_change - 20, pre_line - fire[0].get_height() / 2])
 
-        life()
     elif r_time == 0:
         screen.blit(text_start, [200, 100])
     else:
+        warning.stop()
         screen.blit(text_end1, [200, 100])
         screen.blit(text_end2, [200, 170])
     if shld != 0:
         screen.blit(shieldicon, [0, shieldicon.get_height()/2+hearticon.get_height()])
 
-    screen.blit(randitem[icon], [screen_width + i_change, level-randitem[icon].get_height()])
     pygame.display.update()
 
 # END
