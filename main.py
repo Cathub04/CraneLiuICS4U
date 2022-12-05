@@ -14,7 +14,7 @@ screen_width = 1200
 screen_height = 600
 level = 500
 screen = pygame.display.set_mode([screen_width, screen_height])
-pygame.display.set_caption("Game")
+pygame.display.set_caption("Running Game")
 background = [pygame.image.load('./src/bg.jpeg'), pygame.image.load('./src/bg.jpeg')]
 for i in range(len(background)):
     background[i] = pygame.transform.scale(background[i], [screen_width, screen_height])
